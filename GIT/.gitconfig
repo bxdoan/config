@@ -1,0 +1,44 @@
+[user]
+	name = Doan Bui
+	email = bxdoan93@gmail.com
+[log]
+	date = local
+[alias]
+        a = add
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+        cp = cherry-pick
+        cpc = cherry-pick --continue
+        cpa = cherry-pick --abort
+        rb = rebase
+        rbc = rebase --continue
+        rba = rebase --abort
+        pr = pull --rebase
+        m = merge
+        ms = merge --squash
+        unstage = reset HEAD --
+	last = log -1 HEAD
+    	tree = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    	lol = log --graph --decorate --pretty=short --all --abbrev-commit
+    	hist = log --pretty=format:'%Cred%h %C(yellow)%d %Creset%s %C(bold blue)<%an>%Creset' --abbrev-commit --graph --date=short
+[color "status"]
+        added = green
+        changed = yellow
+        header = white
+        untracked = cyan
+[color "branch"]
+        current = yellow reverse
+        local = yellow
+        remote = green
+
+[status]
+	showUntrackedFiles = no
+[push]
+	default = simple
+[color]
+	status = true
+	branch = true
+	diff = true
+	interactive = true
