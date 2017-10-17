@@ -52,5 +52,5 @@ function LastExitStatus() {
 }
 
 change_PS1 () {
-    PROMPT_COMMAND='PS1="\n\[\e[37;44m\]{\!} \[\e[m\]\[\e[33;44m\]\u\[\e[m\]\[\e[37;44m\]@\[\e[m\]\[\e[33;44m\]\h\[\e[m\]\[\e[33;44m\] \[\e[m\]\[\e[37;44m\]\A\[\e[m\]\[\e[33;44m\] \[\e[m\]\[\e[30;44m\]\w\[\e[m\]\n$(LastExitStatus) "'
+    PROMPT_COMMAND='PS1="\[\033]0;$TITLEPREFIX:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$(LastExitStatus) "'
 }
