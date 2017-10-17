@@ -39,8 +39,8 @@ function LastExitStatus() {
     local last_status=$?
     local reset=$(ResetColor)
 
-    local failure="✘"
-    local success="✔"
+    local failure="✯"
+    local success="卐"
 
     if [[ "$last_status" != "0" ]]; then
         last_status="$(Color 5)$failure$reset"
