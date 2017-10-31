@@ -35,22 +35,38 @@ function ResetColor() {
   echo "\[$(tput sgr0)\]"
 }
 
-function LastExitStatus() {
+function GitBranch() {
+    git symbolic-ref --short HEAD
+}
+
+
+LastExitStatus() {
     local last_status=$?
     local reset=$(ResetColor)
 
-    local failure="✯"
-    local success="卐"
+    local failure="X"
+    local success="O"
 
     if [[ "$last_status" != "0" ]]; then
         last_status="$(Color 5)$failure$reset"
     else
         last_status="$(Color 2)$success$reset"
     fi
-
     echo "$last_status"
 }
 
 change_PS1 () {
-    PROMPT_COMMAND='PS1="\[\033]0;$TITLEPREFIX:${PWD//[^[:ascii:]]/?}\007\]\n\[\033[32m\]\u@\h \[\033[33m\]\w\[\033[36m\]`__git_ps1`\[\033[0m\]\n$(LastExitStatus) "'
+    PROMPT_COMMAND='exitstatus=$(LastExitStatus);\
+background=$(Color 18);\
+historyId=$(Color 255);\
+user=$(Color 3);\
+at=$(Color 255);\
+host=$(Color 3);\
+time=$(Color 255);\
+dir=$(Color 208);\
+branch=$(Color 40);\
+bold=$(tput bold);\
+reset=$(ResetColor);\
+PS1="\n$background$historyId{\!} $user\u$at@$host\h $time\A $dir${PWD} $branch$bold$(GitBranch)$reset\n${exitstatus} "'
 }
+
