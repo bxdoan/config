@@ -1,0 +1,93 @@
+#!/bin/sh
+# Author: Doan Bui (bxdoan93@gmail.com)
+# htttps://github.com/bxdoan/
+
+### ----------------------------------------------------------------------------
+### Check  ~/.ssh/ folder and generate ssh key
+### ----------------------------------------------------------------------------
+if [ ! -f /home/doan/.ssh/id_rsa ]; then
+    printf "File id_rsa not found!\nGenerating ssh key...\n"
+    ssh-keygen -f /home/doan/.ssh/id_rsa -t rsa -N '' -b 4096 -C "bxdoan93@gmail.com"
+    echo "Generate id_rsa complete"
+fi
+echo "File id_rsa is ready"
+
+### ----------------------------------------------------------------------------
+### Check and create config file in ssh
+### ----------------------------------------------------------------------------
+if [ ! -f ~/.ssh/config ]; then
+    printf "File config not found!\nCreating $USER/.ssh/config...\n"
+    echo "StrictHostKeyChecking no" > ~/.ssh/config
+    echo "Generate ~/.ssh/config complete"
+else
+    cat ~/.ssh/config | grep "StrictHostKeyChecking"
+    if [ $? -ne 0 ]; then
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    fi
+fi
+
+### ----------------------------------------------------------------------------
+### add ssh key into github
+### ----------------------------------------------------------------------------
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
+user="bxdoan"
+title="$(hostname)"
+path="${path:-$HOME/.ssh/id_rsa.pub}"
+
+# check if the path is available
+if [ ! -f $path ]; then
+    die "$path: no such file or directory"
+fi
+key_data="$(cat "$path")"
+
+result="$(curl -u "$user" \
+            --data "{\"title\":\"$title\",\"key\":\"$key_data\"}" \
+            https://api.github.com/user/keys
+         )"
+
+# check if upload is completed successfully
+ssh -T git@github.com 2>&1 | grep "success"
+if [ $? -ne 0 ]; then
+    die "sorry, try again"
+fi
+
+### ----------------------------------------------------------------------------
+### Clone source
+### ----------------------------------------------------------------------------
+if [ -d ~/Repo ]; then
+    mkdir ~/Repo
+    echo "Created ~/Repo"
+fi
+
+source="$(git clone git@github.com:bxdoan/source.git) ~/Repo/"
+config="$(git clone git@github.com:bxdoan/config.git) ~/Repo/"
+
+if [ ! -d ~/Repo/source ]; then
+    echo "Can NOT clone source repository"
+fi
+
+if [ ! -d ~/Repo/config ]; then
+    echo "Can NOT clone config repository"
+fi
+
+### ----------------------------------------------------------------------------
+### Function support
+### ----------------------------------------------------------------------------
+
+cp ~/Repo/config/GIT/.gitconfig ~/
+bashrc="cat ~/Repo/config/BASH/.bashrc"
+echo $bashrc >> ~/.bashrc
+
+
+### ----------------------------------------------------------------------------
+### Function support
+### ----------------------------------------------------------------------------
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
