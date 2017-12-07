@@ -15,7 +15,6 @@
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
-(global-set-key [f2] 'save-buffer)
 ;; set color
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
@@ -29,8 +28,10 @@
 (setq tabbar-use-images nil)
 ;; (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
 (tabbar-mode)
+(global-set-key [f2] 'save-buffer)
 (global-set-key [f3] 'tabbar-backward-tab)
 (global-set-key [f4] 'tabbar-forward-tab)
+(global-set-key [f5] 'revert-buffer-no-confirm-and-reload-emacs)
 (global-set-key [f6] 'tabbar-forward-group)
 (global-set-key [f8] 'edts-project-node-init)
 (global-set-key [f7] 'my-next-long-line)
@@ -84,3 +85,39 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; =============================================================================
+;; my-next-long-line
+;; =============================================================================
+(defun my-next-long-line (arg)
+  "Move to the ARGth next long line greater than `fill-column'."
+  (interactive "p")
+  (or arg (setq arg 1))
+  (let ((opoint (point))
+        (line-length 0))
+    ;; global-variable: fill-column
+    (while (and (<= line-length fill-column)
+                (zerop (forward-line (if (< arg 0) -1 1))))
+      (setq line-length (save-excursion
+                          (end-of-line)
+                          (current-column))))
+    ;; Stop, end of buffer reached.
+    (if (> line-length fill-column)
+        (if (> arg 1)
+            (my-next-long-line (1- arg))
+          (if (< arg -1)
+              (my-next-long-line (1+ arg))
+            (message (format "Long line of %d columns found"
+                             line-length))))
+      (goto-char opoint)
+      (message "Long line not found"))))
+(setq-default fill-column 80)
+
+;; =============================================================================
+;; revert-buffer-no-confirm-and-reload-emacs
+;; =============================================================================
+(defun revert-buffer-no-confirm-and-reload-emacs ()
+  "Revert buffer without confirmation."
+  (interactive)
+  (revert-buffer t t)
+  (load-file "~/.emacs"))

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Author: Doan Bui (bxdoan93@gmail.com)
 # htttps://github.com/bxdoan/
 
@@ -33,7 +33,6 @@ die() {
     echo "$@" >&2
     exit 1
 }
-
 user="bxdoan"
 title="$(hostname)"
 path="${path:-$HOME/.ssh/id_rsa.pub}"
@@ -58,39 +57,55 @@ fi
 ### ----------------------------------------------------------------------------
 ### Clone source
 ### ----------------------------------------------------------------------------
-if [ -d ~/Repo ]; then
-    mkdir ~/Repo
-    echo "Created ~/Repo"
-fi
-clonesource
-
-### ----------------------------------------------------------------------------
-### Function support
-### ----------------------------------------------------------------------------
-
-cp ~/Repo/config/GIT/.gitconfig ~/
-bashrc="cat ~/Repo/config/BASH/.bashrc"
-echo $bashrc >> ~/.bashrc
-
-
-### ----------------------------------------------------------------------------
-### Function support
-### ----------------------------------------------------------------------------
-die() {
-    echo "$@" >&2
-    exit 1
-}
-
-clonesource() {
-source="$(git clone git@github.com:bxdoan/source.git) ~/Repo/"
-
-if [ $? -ne 0 ]; then
-    echo "Can NOT clone source repository"
+if [ ! -d /home/$USER/Repo ]; then
+    mkdir /home/Repo
+    echo "Create ~/Repo"
 fi
 
-config="$(git clone git@github.com:bxdoan/config.git) ~/Repo/"
-
-if [ $? -ne 0 ]; then
-    echo "Can NOT clone config repository"
+if [ ! -d ~/Repo/config ]; then
+    config="$(git clone git@github.com:bxdoan/config.git) ~/Repo/"
+    if [ $? -ne 0 ]; then
+        echo "Can NOT clone config repository"
+    fi
 fi
-}
+
+if [ ! -d ~/Repo/source ]; then
+    source="$(git clone git@github.com:bxdoan/source.git) ~/Repo/"
+    if [ $? -ne 0 ]; then
+        echo "Can NOT clone source repository"
+    fi
+fi
+
+### ----------------------------------------------------------------------------
+### Clone source
+### ----------------------------------------------------------------------------
+
+if [ ! -f ~/.gitconfig ]; then
+     cp ~/Repo/config/GIT/.gitconfig ~/
+    echo "~/.gitconfig done"
+fi
+
+if [ ! -f /home/$USER/.bashrc ]; then
+    echo "~/.bashrc is NOT exist, creating..."
+    cp ~/Repo/config/BASH/.bashrc ~/
+else
+    echo "~/.bashrc is exist, appending..."
+    cat ~/.bashrc | grep "upd_bash"
+    if [ $? -ne 0 ]; then
+        cat ~/Repo/config/BASH/.bashrc >> ~/.bashrc
+    fi
+fi
+echo "~/.bashrc done"
+
+if [ ! -f ~/.emacs ]; then
+    cp ~/Repo/config/EMACS/.emacs ~/
+    echo "~/.emacs done"
+fi
+
+if [ ! -d ~/.emacs.d ]; then
+     cp ~/Repo/config/EMACS/.emacs.d ~/
+    echo "~/.emacs.d done"
+fi
+
+source ~/.bashrc
+echo "Set up done! Ready to work"
