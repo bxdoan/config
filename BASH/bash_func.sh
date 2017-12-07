@@ -36,7 +36,10 @@ function ResetColor() {
 }
 
 function GitBranch() {
-    git symbolic-ref --short HEAD
+    git symbolic-ref --short HEAD &> /dev/null
+    if [ $? -ne 0 ]; then
+        git symbolic-ref --short HEAD
+    fi
 }
 
 

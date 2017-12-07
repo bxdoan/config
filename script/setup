@@ -5,9 +5,9 @@
 ### ----------------------------------------------------------------------------
 ### Check  ~/.ssh/ folder and generate ssh key
 ### ----------------------------------------------------------------------------
-if [ ! -f /home/doan/.ssh/id_rsa ]; then
+if [ ! -f /home/$USER/.ssh/id_rsa ]; then
     printf "File id_rsa not found!\nGenerating ssh key...\n"
-    ssh-keygen -f /home/doan/.ssh/id_rsa -t rsa -N '' -b 4096 -C "bxdoan93@gmail.com"
+    ssh-keygen -f /home/$USER/.ssh/id_rsa -t rsa -N '' -b 4096 -C "bxdoan93@gmail.com"
     echo "Generate id_rsa complete"
 fi
 echo "File id_rsa is ready"
@@ -15,14 +15,14 @@ echo "File id_rsa is ready"
 ### ----------------------------------------------------------------------------
 ### Check and create config file in ssh
 ### ----------------------------------------------------------------------------
-if [ ! -f ~/.ssh/config ]; then
+if [ ! -f /home/$USER/.ssh/config ]; then
     printf "File config not found!\nCreating $USER/.ssh/config...\n"
-    echo "StrictHostKeyChecking no" > ~/.ssh/config
-    echo "Generate ~/.ssh/config complete"
+    echo "StrictHostKeyChecking no" > /home/$USER/.ssh/config
+    echo "Generate /home/$USER/.ssh/config complete"
 else
-    cat ~/.ssh/config | grep "StrictHostKeyChecking"
+    cat /home/$USER/.ssh/config | grep "StrictHostKeyChecking"
     if [ $? -ne 0 ]; then
-        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> /home/$USER/.ssh/config
     fi
 fi
 
@@ -62,17 +62,7 @@ if [ -d ~/Repo ]; then
     mkdir ~/Repo
     echo "Created ~/Repo"
 fi
-
-source="$(git clone git@github.com:bxdoan/source.git) ~/Repo/"
-config="$(git clone git@github.com:bxdoan/config.git) ~/Repo/"
-
-if [ ! -d ~/Repo/source ]; then
-    echo "Can NOT clone source repository"
-fi
-
-if [ ! -d ~/Repo/config ]; then
-    echo "Can NOT clone config repository"
-fi
+clonesource
 
 ### ----------------------------------------------------------------------------
 ### Function support
@@ -91,3 +81,16 @@ die() {
     exit 1
 }
 
+clonesource() {
+source="$(git clone git@github.com:bxdoan/source.git) ~/Repo/"
+
+if [ $? -ne 0 ]; then
+    echo "Can NOT clone source repository"
+fi
+
+config="$(git clone git@github.com:bxdoan/config.git) ~/Repo/"
+
+if [ $? -ne 0 ]; then
+    echo "Can NOT clone config repository"
+fi
+}

@@ -3,8 +3,9 @@
 # =============================================================================
 alias upd_bash='source ~/.bashrc'
 alias grepd='grep -r -s -I --color'
-
+alias emacs='emacs -nw'
 alias lsa='ls -a'
+
 export config='~/Repo/config/'
 export source='~/Repo/source/'
 export foodcoping='~/Repo/Foodcoping'
