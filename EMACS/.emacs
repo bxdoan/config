@@ -15,27 +15,10 @@
 (global-set-key (kbd "C-c <right>") 'windmove-right)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
-;; set color
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil  :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :family "misc-fixed")))))
-;; TABBAR
-(load-file "~/.emacs.d/tabbar.el")
-(require 'tabbar)
-(setq tabbar-use-images nil)
-;; (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
-(tabbar-mode)
 (global-set-key [f2] 'save-buffer)
-(global-set-key [f3] 'tabbar-backward-tab)
-(global-set-key [f4] 'tabbar-forward-tab)
 (global-set-key [f5] 'revert-buffer-no-confirm-and-reload-emacs)
-(global-set-key [f6] 'tabbar-forward-group)
 (global-set-key [f8] 'edts-project-node-init)
 (global-set-key [f7] 'my-next-long-line)
-(setq-default indent-tabs-mode nil)
 
 ;; Match parentheses
 (show-paren-mode t)
@@ -55,6 +38,30 @@
 (setq x-select-enable-clipboard t)
 ;; add count line
 (global-linum-mode 1)
+
+
+;; =============================================================================
+;; set color
+;; =============================================================================
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil  :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :family "misc-fixed")))))
+(setq-default indent-tabs-mode nil)
+
+;; =============================================================================
+;; TABBAR
+;; =============================================================================
+(load-file "~/.emacs.d/tabbar.el")
+(require 'tabbar)
+(setq tabbar-use-images nil)
+;; (setq tabbar-buffer-groups-function 'my-tabbar-buffer-groups)
+(tabbar-mode)
+(global-set-key [f3] 'tabbar-backward-tab)
+(global-set-key [f4] 'tabbar-forward-tab)
+(global-set-key [f6] 'tabbar-forward-group)
 
 ;; =============================================================================
 ;; git-timemachine
@@ -121,3 +128,34 @@
   (interactive)
   (revert-buffer t t)
   (load-file "~/.emacs"))
+
+;; =============================================================================
+;; Auto indent and remove whitespace
+;; =============================================================================
+(local-set-key (kbd "TAB") 'tab-space-indent)
+(defun tab-space-indent ()
+  (interactive)
+  (save-excursion
+    (if (use-region-p)
+        (let*
+            ((firstline (line-number-at-pos (region-beginning)))
+             (lastline (line-number-at-pos (region-end)))
+             (firstpoint (lambda () (save-excursion
+                                      (goto-line firstline)
+                                      (line-beginning-position))))
+             (lastpoint (lambda () (save-excursion
+                                     (goto-line lastline)
+                                     (line-end-position)))))
+          (delete-trailing-whitespace (funcall firstpoint) (funcall lastpoint))
+          (untabify (funcall firstpoint) (funcall lastpoint)))
+      (delete-trailing-whitespace (line-beginning-position) (line-end-position))
+      (untabify (line-beginning-position) (line-end-position))))
+  (indent-for-tab-command))
+
+;; =============================================================================
+;; whitespace
+;; =============================================================================
+(add-to-list 'load-path "/home/xdoabui/.emacs.d/whitespace/")
+(global-whitespace-mode)
+(setq whitespace-style '(face tabs))
+(set-face-background whitespace-tab "orange")
