@@ -1,8 +1,8 @@
 # config
 
-## Auto setup for new machine
+## Auto setup for new Linux  machine
 
-Execute command below
+Execute command below:
 ```
-sh -c "curl https://raw.githubusercontent.com/bxdoan/config/master/script/setup -o ~/setup && chmod +x ~/setup"
+curl https://raw.githubusercontent.com/bxdoan/config/master/script/setup -o ~/setup && chmod +x ~/setup && ./setup
 ```
