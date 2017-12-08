@@ -22,7 +22,10 @@ string_join () {
 ###       ...:/a:/b:/c
 add_PATH () {
     local result=$(string_join : "$@")
-    PATH=$PATH:$result
+    echo $PATH > /dev/null | grep "$result"
+    if [ $? -ne 0 ]; then
+        PATH=$PATH:$result
+    fi    
 }
 
 ### Usage:

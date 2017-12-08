@@ -43,10 +43,12 @@ if [ ! -f $path ]; then
 fi
 key_data="$(cat "$path")"
 
-result="$(curl -u "$user" \
+if [ ! -f ~/Repo/config/BASH/.bashrc ]; then  
+    result="$(curl -u "$user" \
             --data "{\"title\":\"$title\",\"key\":\"$key_data\"}" \
             https://api.github.com/user/keys
          )"
+fi
 
 # check if upload is completed successfully
 ssh -T git@github.com 2>&1 | grep "success"
@@ -103,7 +105,7 @@ if [ ! -f ~/.emacs ]; then
 fi
 
 if [ ! -d ~/.emacs.d ]; then
-     cp ~/Repo/config/EMACS/.emacs.d ~/
+    cp ~/Repo/config/EMACS/.emacs.d ~/
     echo "~/.emacs.d done"
 fi
 
