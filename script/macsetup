@@ -12,23 +12,23 @@ fi
 ### ----------------------------------------------------------------------------
 ### Check  ~/.ssh/ folder and generate ssh key
 ### ----------------------------------------------------------------------------
-if [ ! -f /home/$USER/.ssh/id_rsa ]; then
+if [ ! -f /Users/doan/.ssh/id_rsa ]; then
     printf "File id_rsa not found!\nGenerating ssh key...\n"
-    ssh-keygen -f /home/$USER/.ssh/id_rsa -t rsa -N '' -b 4096 -C "bxdoan93@gmail.com"
+    ssh-keygen -f /Users/doan/.ssh/id_rsa -t rsa -N '' -b 4096 -C "bxdoan93@gmail.com"
 fi
 echo "File id_rsa is ready"
 
 ### ----------------------------------------------------------------------------
 ### Check and create config file in ssh
 ### ----------------------------------------------------------------------------
-if [ ! -f /home/$USER/.ssh/config ]; then
+if [ ! -f /Users/doan/.ssh/config ]; then
     printf "File config not found!\nCreating $USER/.ssh/config...\n"
-    echo "StrictHostKeyChecking no" > /home/$USER/.ssh/config
+    echo "StrictHostKeyChecking no" > /Users/doan/.ssh/config
     echo "Generate /home/$USER/.ssh/config complete"
 else
-    cat /home/$USER/.ssh/config | grep "StrictHostKeyChecking" > /dev/null
+    cat /Users/doan/.ssh/config | grep "StrictHostKeyChecking" > /dev/null
     if [ $? -ne 0 ]; then
-        echo "StrictHostKeyChecking no" >> /home/$USER/.ssh/config
+        echo "StrictHostKeyChecking no" >> /Users/doan/.ssh/config
     fi
 fi
 
@@ -49,11 +49,9 @@ if [ ! -f $path ]; then
 fi
 key_data="$(cat "$path")"
 
-echo "add ssh key into github"
 ssh -T git@github.com 2>&1 | grep "success"
 if [ $? -ne 0 ]; then
-    result="$(
-            curl -u "$user" \
+    result="$(curl -u "$user" \
             --data "{\"title\":\"$title\",\"key\":\"$key_data\"}" \
             https://api.github.com/user/keys
          )"
@@ -62,6 +60,7 @@ if [ $? -ne 0 ]; then
         die "sorry, can NOT connect github"
     fi
 fi
+
 
 ### ----------------------------------------------------------------------------
 ### add ssh key into bitbucket
@@ -81,51 +80,50 @@ if [ $? -ne 0 ]; then
     fi
 fi
 
-
 ### ----------------------------------------------------------------------------
 ### Clone source
 ### ----------------------------------------------------------------------------
 function setupconfig {
     echo "Setup ~/.gitconfig"
     if [ ! -f ~/.gitconfig ]; then
-        cp ~/Repo/config/GIT/.gitconfig ~/
+        cp /Users/doan/Documents/Repo/config/GIT/.gitconfig ~/
         echo "~/.gitconfig done"
     fi
 
     echo "Setup ~/.bashrc"
-    if [ ! -f /home/$USER/.bashrc ]; then
+    if [ ! -f /Users/doan/.bashrc ]; then
         echo "~/.bashrc is NOT exist, creating..."
-        cp ~/Repo/config/BASH/.bashrc ~/
+        cp ~/Users/doan/Documents/Repo/config/BASH/.bashrcmac ~/.bashrc
     else
         echo "~/.bashrc is exist"
         cat ~/.bashrc | grep "upd_bash"
         if [ $? -ne 0 ]; then
-            echo "appending"
-            cat ~/Repo/config/BASH/.bashrc >> ~/.bashrc
+            echo "appending..."
+            cat /Users/doan/Documents/Repo/config/BASH/.bashrc >> ~/.bashrc
         fi
     fi
     echo "~/.bashrc done"
 
     echo "Setup ~/.emacs"
     if [ ! -f ~/.emacs ]; then
-        cp ~/Repo/config/EMACS/.emacs ~/
+        cp /Users/doan/Documents/Repo/config/EMACS/.emacs ~/
         echo "~/.emacs done"
     fi
 
     echo "Setup ~/.emacs.d/"
     if [ ! -d ~/.emacs.d/ ]; then
-        cp -r ~/Repo/config/EMACS/.emacs.d/ ~/
+        cp -r /Users/doan/Documents/Repo/config/EMACS/.emacs.d/ ~/
         echo "~/.emacs.d/ done"
     fi
 }
 
-if [ ! -d /home/$USER/Repo ]; then
-    mkdir /home/$USER/Repo
+if [ ! -d /Users/doan/Documents/Repo ]; then
+    mkdir /Users/doan/Documents/Repo
     echo "Create ~/Repo"
 fi
 
-if [ ! -d ~/Repo/config ]; then
-    config="$(git clone git@github.com:bxdoan/config.git ~/Repo/config/)"
+if [ ! -d /Users/doan/Documents/Repo/config ]; then
+    config="$(git clone git@github.com:bxdoan/config.git ~/Documents/Repo/config/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone config repository"
     fi
@@ -133,15 +131,16 @@ fi
 
 setupconfig
 
-if [ ! -d ~/Repo/source ]; then
-    source="$(git clone git@github.com:bxdoan/source.git ~/Repo/source/)"
+if [ ! -d ~/Documents/Repo/source ]; then
+    source="$(git clone git@github.com:bxdoan/source.git ~/Documents/Repo/source/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone source repository"
     fi
 fi
 
-if [ ! -d ~/Repo/foodcoping ]; then
-    source="$(git clone git@bitbucket.org:hoangnguyen142536/foodcoping.git ~/Repo/foodcoping/)"
+
+if [ ! -d ~/Documents/Repo/foodcoping ]; then
+    source="$(git clone git@bitbucket.org:hoangnguyen142536/foodcoping.git ~/Document/Repo/foodcoping/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone foodcoping repository"
     fi
