@@ -6,9 +6,9 @@ alias grepd='grep -r -s -I --color'
 alias emacsnw='emacs -nw'
 alias lsa='ls -a'
 
-export config='~/Repo/config'
-export source='~/Repo/source'
-export foodcoping='~/Repo/foodcoping'
+export config='/home/doan/Repo/config'
+export source='/home/doan/Repo/source'
+export foodcoping='/home/doan/Repo/foodcoping'
 
 # =============================================================================
 # Alias Git

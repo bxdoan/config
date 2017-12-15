@@ -90,19 +90,19 @@ function setupconfig {
         echo "~/.gitconfig done"
     fi
 
-    echo "Setup ~/.bashrc"
-    if [ ! -f /Users/doan/.bashrc ]; then
-        echo "~/.bashrc is NOT exist, creating..."
-        cp ~/Users/doan/Documents/Repo/config/BASH/.bashrcmac ~/.bashrc
+    echo "Setup ~/.bash_profile"
+    if [ ! -f /Users/doan/.bash_profile ]; then
+        echo "~/.bash_profile is NOT exist, creating..."
+        cp ~/Users/doan/Documents/Repo/config/BASH/.bashrcmac ~/.bash_profile
     else
-        echo "~/.bashrc is exist"
-        cat ~/.bashrc | grep "upd_bash"
+        echo "~/.bash_profile is exist"
+        cat ~/.bash_profile | grep "upd_bash"
         if [ $? -ne 0 ]; then
             echo "appending..."
-            cat /Users/doan/Documents/Repo/config/BASH/.bashrc >> ~/.bashrc
+            cat /Users/doan/Documents/Repo/config/BASH/.bashrcmac >> ~/.bash_profile
         fi
     fi
-    echo "~/.bashrc done"
+    echo "~/.bash_profile done"
 
     echo "Setup ~/.emacs"
     if [ ! -f ~/.emacs ]; then
@@ -140,7 +140,7 @@ fi
 
 
 if [ ! -d ~/Documents/Repo/foodcoping ]; then
-    source="$(git clone git@bitbucket.org:hoangnguyen142536/foodcoping.git ~/Document/Repo/foodcoping/)"
+    source="$(git clone git@bitbucket.org:hoangnguyen142536/foodcoping.git ~/Documents/Repo/foodcoping/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone foodcoping repository"
     fi
