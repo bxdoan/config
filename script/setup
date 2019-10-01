@@ -140,12 +140,7 @@ if [ ! -d ~/Repo/source ]; then
     fi
 fi
 
-if [ ! -d ~/Repo/foodcoping ]; then
-    source="$(git clone git@bitbucket.org:hoangnguyen142536/foodcoping.git ~/Repo/foodcoping/)"
-    if [ $? -ne 0 ]; then
-        die "Can NOT clone foodcoping repository"
-    fi
-fi
+
 
 ### ----------------------------------------------------------------------------
 ### Update ~/.bashrc

@@ -126,7 +126,6 @@ alias lsa='ls -a'
 
 export config='/Users/doan/Documents/Repo/config/'
 export source='/Users/doan/Documents/Repo/source/'
-export foodcoping='/Users/doan/Documents/Repo/Foodcoping'
 
 # =============================================================================
 # Alias Git
