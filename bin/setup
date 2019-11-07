@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: Doan Bui (bxdoan93@gmail.com)
 # htttps://github.com/bxdoan/
 
@@ -66,20 +66,20 @@ fi
 ### ----------------------------------------------------------------------------
 ### add ssh key into bitbucket
 ### ----------------------------------------------------------------------------
-echo "add ssh key into bitbucket"
-ssh -T git@bitbucket.com 2>&1 | grep "logged in as bxdoan"
-if [ $? -ne 0 ]; then
-    result="$(
-        curl -u "$user" \
-            --data "label=$title" \
-            --data-urlencode "key=$key_data" \
-            https://bitbucket.org/api/1.0/users/"${user%:*}"/ssh-keys
-         )"
-    ssh -T git@bitbucket.com 2>&1 | grep "logged in as bxdoan"
-    if [ $? -ne 0 ]; then
-        die "sorry, can NOT connect bitbucket"
-    fi
-fi
+# echo "add ssh key into bitbucket"
+# ssh -T git@bitbucket.com 2>&1 | grep "logged in as bxdoan"
+# if [ $? -ne 0 ]; then
+#     result="$(
+#         curl -u "$user" \
+#             --data "label=$title" \
+#             --data-urlencode "key=$key_data" \
+#             https://bitbucket.org/api/1.0/users/"${user%:*}"/ssh-keys
+#          )"
+#     ssh -T git@bitbucket.com 2>&1 | grep "logged in as bxdoan"
+#     if [ $? -ne 0 ]; then
+#         die "sorry, can NOT connect bitbucket"
+#     fi
+# fi
 
 
 ### ----------------------------------------------------------------------------
@@ -87,34 +87,34 @@ fi
 ### ----------------------------------------------------------------------------
 function setupconfig {
     echo "Setup ~/.gitconfig"
-    if [ ! -f ~/.gitconfig ]; then
-        cp ~/Repo/config/GIT/.gitconfig ~/
+    if [ ! -f /home/$USER/.gitconfig ]; then
+        cp /home/$USER/Repo/config/GIT/.gitconfig /home/$USER/
         echo "~/.gitconfig done"
     fi
 
     echo "Setup ~/.bashrc"
     if [ ! -f /home/$USER/.bashrc ]; then
         echo "~/.bashrc is NOT exist, creating..."
-        cp ~/Repo/config/BASH/.bashrc ~/
+        cp /home/$USER/Repo/config/BASH/.bashrc /home/$USER/
     else
         echo "~/.bashrc is exist"
-        cat ~/.bashrc | grep "upd_bash"
+        cat /home/$USER/.bashrc | grep "upd_bash"
         if [ $? -ne 0 ]; then
             echo "appending"
-            cat ~/Repo/config/BASH/.bashrc >> ~/.bashrc
+            cat /home/$USER/Repo/config/BASH/.bashrc >> /home/$USER/.bashrc
         fi
     fi
     echo "~/.bashrc done"
 
     echo "Setup ~/.emacs"
-    if [ ! -f ~/.emacs ]; then
-        cp ~/Repo/config/EMACS/.emacs ~/
+    if [ ! -f /home/$USER/.emacs ]; then
+        cp /home/$USER/Repo/config/EMACS/.emacs /home/$USER/
         echo "~/.emacs done"
     fi
 
     echo "Setup ~/.emacs.d/"
-    if [ ! -d ~/.emacs.d/ ]; then
-        cp -r ~/Repo/config/EMACS/.emacs.d/ ~/
+    if [ ! -d /home/$USER/.emacs.d/ ]; then
+        cp -r /home/$USER/Repo/config/EMACS/.emacs.d/ /home/$USER/
         echo "~/.emacs.d/ done"
     fi
 }
@@ -124,8 +124,8 @@ if [ ! -d /home/$USER/Repo ]; then
     echo "Create ~/Repo"
 fi
 
-if [ ! -d ~/Repo/config ]; then
-    config="$(git clone git@github.com:bxdoan/config.git ~/Repo/config/)"
+if [ ! -d /home/$USER/Repo/config ]; then
+    config="$(git clone git@github.com:bxdoan/config.git /home/$USER/Repo/config/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone config repository"
     fi
@@ -134,7 +134,7 @@ fi
 setupconfig
 
 if [ ! -d ~/Repo/source ]; then
-    source="$(git clone git@github.com:bxdoan/source.git ~/Repo/source/)"
+    source="$(git clone git@github.com:bxdoan/source.git /home/$USER/Repo/source/)"
     if [ $? -ne 0 ]; then
         die "Can NOT clone source repository"
     fi

@@ -5,10 +5,11 @@
 	date = local
 [alias]
         a = add
-	co = checkout
-	br = branch
-	ci = commit
-	st = status
+				co = checkout
+				br = branch
+				ci = commit
+				st = status
+				rs = reset
         cp = cherry-pick
         cpc = cherry-pick --continue
         cpa = cherry-pick --abort
