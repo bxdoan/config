@@ -70,7 +70,7 @@
 ;; =============================================================================
 ;; git-timemachine
 ;; =============================================================================
-(add-to-list 'load-path "/home/doan/.emacs.d/git-timemachine-master/")
+(add-to-list 'load-path "/home/$USER/.emacs.d/git-timemachine-master/")
 (require 'git-timemachine)
 ;; M-x git-timemachine
 ;; p - visit previous historic version
@@ -83,7 +83,7 @@
 ;; =============================================================================
 ;; diff-hl
 ;; =============================================================================
-(add-to-list 'load-path "/home/doan/.emacs.d/diff-hl-master/")
+(add-to-list 'load-path "/home/$USER/.emacs.d/diff-hl-master/")
 (require 'diff-hl)
 (global-diff-hl-mode)
 (global-set-key (kbd "C-n") 'diff-hl-next-hunk)

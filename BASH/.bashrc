@@ -10,8 +10,10 @@ alias ll='ls -alF'
 export repo='/home/$USER/Repo'
 export config='/home/$USER/Repo/config'
 export source='/home/$USER/Repo/source'
-
-
+export falcon_api='/home/$USER/Repo/falcon'
+export python_api='/home/$USER/Repo/python-api-assignment'
+export selenium_start='/home/$USER/Repo/selenium-start'
+export docker_compose='/home/$USER/Repo/docker-compose-services'
 
 # =============================================================================
 # Alias Git
