@@ -37,7 +37,11 @@ alias gsu='git st -u'
 alias gk='gitk &'
 alias gf='git fetch'
 alias grs='git reset'
+alias grb='git rebase'
+alias dockerps='sudo chmod 666 /var/run/docker.sock && docker ps'
+alias psql='docker exec -it gc_postgres_dn psql -U postgres'
 
+export PIPENV_VENV_IN_PROJECT=1
 # =============================================================================
 # add source to verify the command
 # =============================================================================
