@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
-# applied for Ubuntu 16 only
 # install docker ref. https://docs.docker.com/engine/installation/linux/ubuntu/#set-up-the-repository
   # remove previous version if any
   sudo apt -y remove docker docker-engine docker.io

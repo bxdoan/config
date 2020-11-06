@@ -70,7 +70,7 @@
 ;; =============================================================================
 ;; git-timemachine
 ;; =============================================================================
-(add-to-list 'load-path "/home/$USER/.emacs.d/git-timemachine-master/")
+(add-to-list 'load-path "~/.emacs.d/git-timemachine-master/")
 (require 'git-timemachine)
 ;; M-x git-timemachine
 ;; p - visit previous historic version
@@ -83,7 +83,7 @@
 ;; =============================================================================
 ;; diff-hl
 ;; =============================================================================
-(add-to-list 'load-path "/home/$USER/.emacs.d/diff-hl-master/")
+(add-to-list 'load-path "~/.emacs.d/diff-hl-master/")
 (require 'diff-hl)
 (global-diff-hl-mode)
 (global-set-key (kbd "C-n") 'diff-hl-next-hunk)
@@ -159,7 +159,7 @@
 ;; =============================================================================
 ;; whitespace
 ;; =============================================================================
-(add-to-list 'load-path "/home/xdoabui/.emacs.d/whitespace/")
+(add-to-list 'load-path "~/.emacs.d/whitespace/")
 (global-whitespace-mode)
 (setq whitespace-style '(face tabs))
 (set-face-background whitespace-tab "orange")
