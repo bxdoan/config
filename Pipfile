@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+
+[packages]
+# rest api server
+falcon = "==1.1.0"
+falcon-cors = "==1.1.2"
+pyjwt = "==1.4.2"
+invoke = "==1.1.0"
+gunicorn = "==19.6.0"
+requests = "*"
+sendgrid = "*"
+simplejson = "*"
+
+[requires]
+python_version = "3.7"

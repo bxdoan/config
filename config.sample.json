@@ -1,0 +1,116 @@
+{
+    "apiKey": "something",
+    "celery": {
+        "backend_url": "mongodb://localhost/atlas_celery_test",
+        "broker_url": "amqp://guest:guest@localhost:5672//",
+        "flower_address": "localhost",
+        "flower_basic_auth": [
+            "admin:admin"
+        ],
+        "flower_port": 5555,
+        "task_always_eager": true
+    },
+    "common_emails": {
+        "developers": "developers@gigacover.com"
+    },
+    "darksky": {
+        "apiKey": "something"
+    },
+    "datamall": {
+        "accountKey": ""
+    },
+    "etiqa": {
+        "apiKey": "<A_LONGER_KEY>",
+        "baseUrl": "",
+        "flatfileDir": "",
+        "key": "<SOME_KEY>",
+        "token": "ETIQA_TOKEN_FOR_AUTOARMOUR",
+        "username": "AutoArmour"
+    },
+    "freshchat": {
+        "baseUrl": "https://api.freshchat.com/v2",
+        "namespace": "test",
+        "outbound": "outbound-messages",
+        "token": "test",
+        "whatsapp_provider": "whatsapp"
+    },
+    "google": {
+        "maps": {
+            "apiKey": "YOUR_GOOGLE_API_KEY"
+        },
+        "storage": {
+            "bucket": "BUCKET_NAME"
+        }
+    },
+    "idoc_service": {
+        "baseUrl": "https://login.easycare.com.sg/Gigacover/?",
+        "keys": {
+            "+": "p1L2u3S",
+            "/": "s1L2a3S4h",
+            "=": "e1Q2u3A4l",
+            "password": "46b2112b54075b96953355cc049cafdc"
+        },
+        "token": "Gigacover12"
+    },
+    "mhc": {
+        "apiKey": "test"
+    },
+    "mhc_service": {
+        "apiKey": "testApiKey",
+        "baseUrl": "https://baseurl",
+        "baseUrlClinic": "https://baseurlclinic",
+        "timeout": 3
+    },
+    "mongodb": {
+        "db": "atlasTest",
+        "host": "localhost"
+    },
+    "nea": {
+        "authorizationKey": ""
+    },
+    "postgres": {
+        "ciuser": "ubuntu",
+        "db": "atlas_test",
+        "host": "1.1.1.1",
+        "port": "5432",
+        "pswd": ""
+    },
+    "s3": {
+        "grab": {
+            "aws_access_key_id": "",
+            "aws_secret_access_key": "",
+            "grab_s3_bucket": "s3://fake"
+        }
+    },
+    "sendgrid": {
+        "apiKey": ""
+    },
+    "sentinel": {
+        "aa": "http://sentinel",
+        "gc": "http://sentinel",
+        "jwtSecret": "secret",
+        "mer": "http://sentinel"
+    },
+    "settings": {
+        "alertsEmail": "",
+        "environment": "test",
+        "mongoArchiveDir": ""
+    },
+    "stripe": {
+        "apiKey": "",
+        "connected_accounts": {
+            "axa_account_id": "some_axa_account"
+        }
+    },
+    "telegram": {
+        "token": ""
+    },
+    "twilio": {
+        "accountSid": "ACtest",
+        "authToken": "test",
+        "fromNumber": ""
+    },
+    "website_url": {
+        "gc": "https://gigacover.com/"
+    }
+}

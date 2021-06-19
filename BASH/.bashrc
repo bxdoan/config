@@ -7,13 +7,10 @@ alias emacsnw='emacs -nw'
 alias lsa='ls -a'
 alias ll='ls -alF'
 
-export repo='/home/$USER/Repo'
-export config='/home/$USER/Repo/config'
-export source='/home/$USER/Repo/source'
-export falcon_api='/home/$USER/Repo/falcon'
-export python_api='/home/$USER/Repo/python-api-assignment'
-export selenium_start='/home/$USER/Repo/selenium-start'
-export docker_compose='/home/$USER/Repo/docker-compose-services'
+export repo='/home/$USER/repo'
+export config='/home/$USER/repo/config'
+export source='/home/$USER/repo/source'
+export docker_compose='/home/$USER/repo/docker-compose-services'
 
 # =============================================================================
 # Alias Git
@@ -42,6 +39,24 @@ alias dockerps='sudo chmod 666 /var/run/docker.sock && docker ps'
 alias psql='docker exec -it gc_postgres_dn psql -U postgres'
 
 export PIPENV_VENV_IN_PROJECT=1
+
+export PATH="/home/doabui/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# =============================================================================
+# Alias giga
+# =============================================================================
+export aqa='34.87.182.148'
+
+alias sshaqa='ssh doan@34.87.182.148'
+alias goatlas='cd ~/giga/atlas && source .venv/bin/activate && source .env'
+alias goatlas2='cd ~/giga/atlas2 && source .venv/bin/activate && source .env'
+alias goatlas3='cd ~/giga/atlas3 && source .venv/bin/activate && source .env'
+alias restore_schem='~/giga/devops/replicate-schema/restore-schema-2-docker-psql.sh'
+alias cpsetip='mkdir tmp; cp ~/repo/config/bin/setipaddress.sh ~/repo/config/bin/setup_ipaddress.py tmp/'
+alias setip='./tmp/setipaddress.sh'
+
 # =============================================================================
 # add source to verify the command
 # =============================================================================
