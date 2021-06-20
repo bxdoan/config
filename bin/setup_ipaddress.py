@@ -15,12 +15,11 @@ def setup_address(ip_address=None):
             with open(file_path) as f_r:
                 config_json_data = json.load(f_r)
                 config_data = copy.deepcopy(config_json_data)
-                print(f'[BEFORE] config_data : {config_data}')
+                print(f"[BEFORE] postgres : {config_data['postgres']}")
                 config_data['postgres'].update({
                     "host": ip_address
                 })
-                print(f'[AFTER] config_data : {config_data}')
-
+                print(f"[AFTER]  postgres : {config_data['postgres']}")
             with open(file_path, 'w') as f_w:
                 json.dump(config_data, f_w, indent=4, sort_keys=True)
 
