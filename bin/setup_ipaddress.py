@@ -54,8 +54,7 @@ def upd_more_config(config_data):
                     config_data.update({
                         key: value
                     })
-    else:
-        print(f'not found {sample_json} - please check it')
+    else:print(f'not found {sample_json} - please check it')
 
     return config_data
 
