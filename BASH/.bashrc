@@ -38,7 +38,6 @@ alias grb='git rebase'
 alias dockerps='sudo chmod 666 /var/run/docker.sock && docker ps'
 alias psql='docker exec -it gc_postgres_dn psql -U postgres'
 
-export PIPENV_VENV_IN_PROJECT=1
 
 export PATH="/home/doabui/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
@@ -48,6 +47,7 @@ eval "$(pyenv virtualenv-init -)"
 # Alias giga
 # =============================================================================
 export aqa='34.87.182.148'
+export PIPENV_VENV_IN_PROJECT=1
 
 alias sshaqa='ssh doan@34.87.182.148'
 alias goatlas='cd ~/giga/atlas && source .venv/bin/activate && source .env'

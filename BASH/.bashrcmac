@@ -124,15 +124,15 @@ alias grepd='grep -r -s -I --color'
 alias emacsnw='emacs -nw'
 alias lsa='ls -a'
 
-export config='/Users/doan/Documents/Repo/config/'
-export source='/Users/doan/Documents/Repo/source/'
+export config='/Users/don/Documents/repo/config/'
+export source='/Users/don/Documents/repo/source/'
 
 # =============================================================================
 # Alias Git
 # =============================================================================
 alias g='git'
 alias ga='git add'
-alias gb='git br'
+alias gbr='git br'
 alias gt='git tree'
 alias go='git co'
 alias gof='git co -f'
@@ -151,8 +151,28 @@ alias gf='git fetch'
 alias gr='git reset'
 
 # =============================================================================
+# Alias giga
+# =============================================================================
+export aqa='34.87.182.148'
+export PIPENV_VENV_IN_PROJECT=1
+
+alias sshaqa='ssh doan@34.87.182.148'
+alias goatlas='cd /Users/don/Documents/giga/atlas && source .venv/bin/activate && source .env'
+alias goatlas2='cd /Users/don/Documents/giga/atlas2 && source .venv/bin/activate && source .env'
+alias goatlas3='cd /Users/don/Documents/giga/atlas3 && source .venv/bin/activate && source .env'
+alias restore_schem='/Users/don/Documents/giga/devops/replicate-schema/restore-schema-2-docker-psql.sh'
+alias cpsetip='mkdir tmp; cp /Users/don/Documents/repo/config/bin/setipaddress.sh /Users/don/Documents/repo/config/bin/setup_ipaddress.py tmp/'
+alias setip='./tmp/setipaddress.sh'
+
+
+# =============================================================================
 # add source to verify the command
 # =============================================================================
-source /Users/doan/Documents/Repo/config/BASH/bash_func.sh
+export PATH="/Users/don/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+eval "$(/Users/don/homebrew/bin/brew shellenv)"
+source /Users/don/Documents/Repo/config/BASH/bash_func.sh
 add_PATH ~/
 change_PS1
