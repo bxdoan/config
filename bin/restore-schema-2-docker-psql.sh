@@ -31,9 +31,8 @@ fi
 psql_container=${PSQL_CONTAINER:-gc_postgres_dn}
 replicate_home=$HOME/replicate-schema; mkdir -p ${replicate_home}
 
-rm -f directory_listing
 # get listing from directory sorted by modification date
-ftp -n "$HOST" > directory_listing <<fin
+ftp -n "$HOST" > /tmp/directory_listing <<fin
 quote USER $USER
 quote PASS $PASSWORD
 cd $SOURCE
@@ -41,8 +40,8 @@ ls -t
 quit
 fin
 # parse the filenames from the directory listing
-#files_to_get=$(cut -c 2- < directory_listing | head -2 | awk '{print $9}' | sort -r)
-files_to_get=$(cut -c $LS_FILE_OFFSET- < directory_listing | head -$FILES_TO_GET | awk '{print $9}' | sort -r)
+#files_to_get=$(cut -c 2- < /tmp/directory_listing | head -2 | awk '{print $9}' | sort -r)
+files_to_get=$(cut -c $LS_FILE_OFFSET- < /tmp/directory_listing | head -$FILES_TO_GET | awk '{print $9}' | sort -r)
 # make a set of get commands from the filename(s)
 cmd=""
 for f in $files_to_get; do
@@ -66,7 +65,7 @@ for f in $files_to_get; do
   mv ${f} "${replicate_home}"/
 done
 
-#rm -f directory_listing
+rm -f /tmp/directory_listing
 # restore script files to psql db
     # drop schema then re-create
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
