@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
-: you@localhost:/path/to/devops
+STARTTIME=$(date +%s)
+#region printing util
+EC='\033[0m'    # end coloring
+HL='\033[0;33m' # high-lighted color
+ER='\033[0;31m' # red color
+
+CM='\033[0;32m' # comment color
+GR='\033[0;32m' # green color
+WH='\033[0;37m' # white color
+function print_exe_time() {
+    STARTTIME=${1}
+    ENDTIME=$(date +%s)
+    EXE_TIME=$((${ENDTIME} - ${STARTTIME}))
+    printf "
+It takes ${GR}${EXE_TIME}${EC} seconds to complete this script...\n"
+}
 
 DOCSTRING=cat << EOF
-                              ./bin/restore-schema-2-docker-psql.sh
-PSQL_CONTAINER=gc_postgres_dn ./bin/restore-schema-2-docker-psql.sh
+   ./bin/restore-schema-2-docker-psql.sh
 EOF
 PWD=`cd $(dirname "$BASH_SOURCE") && pwd`; CODE=`cd $PWD/.. && pwd`
 
@@ -27,7 +41,8 @@ ls -t
 quit
 fin
 # parse the filenames from the directory listing
-files_to_get=$(cut -c $LS_FILE_OFFSET- < directory_listing | head -$FILES_TO_GET | awk '{print $9}')
+#files_to_get=$(cut -c 2- < directory_listing | head -2 | awk '{print $9}' | sort -r)
+files_to_get=$(cut -c $LS_FILE_OFFSET- < directory_listing | head -$FILES_TO_GET | awk '{print $9}' | sort -r)
 # make a set of get commands from the filename(s)
 cmd=""
 for f in $files_to_get; do
@@ -51,7 +66,7 @@ for f in $files_to_get; do
   mv ${f} "${replicate_home}"/
 done
 
-rm -f directory_listing
+#rm -f directory_listing
 # restore script files to psql db
     # drop schema then re-create
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
@@ -61,10 +76,17 @@ rm -f directory_listing
 
 for f in $files_to_get; do
     # copy script to container
-    tmp_f="$replicate_home/$f"; docker cp "${tmp_f}" "$psql_container:/$f"
+    tmp_f="$replicate_home/$f"
+    psql_container_root="$psql_container:/root/$f"
+    echo "copy file from $tmp_f to $psql_container_root"
+    docker cp "${tmp_f}" "${psql_container_root}"
 
     # run scripts
-    docker exec -it ${psql_container} psql -w -U postgres -d atlas  -f /${f}
+    echo "exec file $f"
+    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220725050001.sql"
+    docker exec -it ${psql_container} psql -w -U postgres -d atlas  -f "/root/${f}"
 done
 
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'  # clear alembic_version table first
+
+print_exe_time ${STARTTIME}
