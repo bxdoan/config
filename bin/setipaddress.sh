@@ -2,8 +2,14 @@
 
 s=$BASH_SOURCE ; s=$(dirname "$s") ; s=$(cd "$s" && pwd) ; SCRIPT_HOME="$s"  # get SCRIPT_HOME=executed script's path, containing folder, cd & pwd to get container path
 pg="gc_postgres_dn"
-your_ip=$(docker inspect ${pg} | grep -oP '(?<="IPAddress": ")[^"]*' | head -n1)
+your_ip="localhost"
 echo "Your IP ${pg} is ${your_ip}"
+
+if [[ $OSTYPE == 'darwin'* ]]; then
+  pipenv="/opt/homebrew/bin/pipenv"
+else
+  [ -x pipenv ] && pipenv='pipenv' || pipenv="$HOME/.pyenv/shims/pipenv"
+fi
 
 _() {
 
@@ -13,8 +19,6 @@ _() {
     echo $AH
 
             cd $AH
-                # prepare :pipenv binary
-                [ -x pipenv ] && pipenv='pipenv' || pipenv="$HOME/.pyenv/shims/pipenv"
-                        PYTHONPATH=`pwd`  $pipenv run python  "$SH/setup_ipaddress.py" $your_ip
+            $pipenv run python  "$SH/setup_ipaddress.py" $your_ip
 }
     eval _
