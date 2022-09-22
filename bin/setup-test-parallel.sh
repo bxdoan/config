@@ -22,10 +22,10 @@ fi
 post_fix=$1
 pg="gc_postgres_${post_fix}"
 
-if [[ $2 == '8' ]]; then
-    number_db=8
-else
+if [[ $2 == '4' ]]; then
     number_db=4
+else
+    number_db=8
 fi
 
 # find existing gc_postgres

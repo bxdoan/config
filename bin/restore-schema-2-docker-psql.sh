@@ -68,8 +68,10 @@ done
 rm -f /tmp/directory_listing
 # restore script files to psql db
     # drop schema then re-create
+    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
     # grant permission for schema
+    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
 
 
@@ -82,10 +84,12 @@ for f in $files_to_get; do
 
     # run scripts
     echo "exec file $f"
-    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220725050001.sql"
+    if [[ "$f" == *"-stamp-"* ]]; then
+       docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'
+       echo "clear alembic_version table first"
+    fi
+    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220913050001.sql"
     docker exec -it ${psql_container} psql -w -U postgres -d atlas  -f "/root/${f}"
 done
-
-    docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'  # clear alembic_version table first
 
 print_exe_time ${STARTTIME}
