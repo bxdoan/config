@@ -7,6 +7,7 @@ LIST_JSON = ['config.json', 'config.dev.json', 'config.test.json']
 sample_json = 'config.sample.json'
 CODE_HOME   = os.path.abspath(os.path.dirname(__file__) + '/..')
 
+
 def load_file(file_path):
     if os.path.exists(file_path):
         with open(file_path) as f_r:
