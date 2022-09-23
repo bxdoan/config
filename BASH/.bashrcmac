@@ -40,7 +40,7 @@ case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
+# uncomment for a colored prompt, if the terminal has the capability; turn
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
 #force_color_prompt=yes
@@ -48,7 +48,8 @@ esac
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
         # We have color support; assume it's compliant with Ecma-48
-        # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+        # (ISO/IEC-6429). (Lack of such support is extremely rare, and
+such
         # a case would tend to support setf rather than setaf.)
         color_prompt=yes
     else
@@ -57,7 +58,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$
+'
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -74,7 +77,8 @@ esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval
+"$(dircolors -b)"
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
@@ -85,16 +89,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # colored GCC warnings and errors
-#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+#export
+GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -124,6 +126,7 @@ alias grepd='grep -r -s -I --color'
 alias emacsnw='emacs -nw'
 alias lsa='ls -a'
 
+export repo='/Users/don/Documents/repo/'
 export config='/Users/don/Documents/repo/config/'
 export source='/Users/don/Documents/repo/source/'
 
@@ -132,7 +135,7 @@ export source='/Users/don/Documents/repo/source/'
 # =============================================================================
 alias g='git'
 alias ga='git add'
-alias gbr='git br'
+alias gb='git br'
 alias gt='git tree'
 alias go='git co'
 alias gof='git co -f'
@@ -144,35 +147,39 @@ alias gm='git merge'
 alias gcp='git cherry-pick'
 alias gps='git push'
 alias gh='git hist'
-alias gs='git st' 
+alias gs='git st'
 alias gsu='git st -u'
 alias gk='gitk &'
 alias gf='git fetch'
 alias gr='git reset'
+alias grb='git rb'
+
 
 # =============================================================================
 # Alias giga
 # =============================================================================
 export aqa='34.87.182.148'
 export PIPENV_VENV_IN_PROJECT=1
-
-alias sshaqa='ssh doan@34.87.182.148'
+export BASH_SILENCE_DEPRECATION_WARNING=1
 alias goatlas='cd /Users/don/Documents/giga/atlas && source .venv/bin/activate && source .env'
 alias goatlas2='cd /Users/don/Documents/giga/atlas2 && source .venv/bin/activate && source .env'
 alias goatlas3='cd /Users/don/Documents/giga/atlas3 && source .venv/bin/activate && source .env'
-alias restore_schem='/Users/don/Documents/giga/devops/replicate-schema/restore-schema-2-docker-psql.sh'
-alias cpsetip='mkdir tmp; cp /Users/don/Documents/repo/config/bin/setipaddress.sh /Users/don/Documents/repo/config/bin/setup_ipaddress.py tmp/'
+alias goatlas4='cd /Users/don/Documents/giga/atlas4 && source .venv/bin/activate && source .env'
+alias goatlas5='cd /Users/don/Documents/giga/atlas5 && source .venv/bin/activate && source .env'
+alias restore_schem='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh'
+alias cpsetip='mkdir tmp; cp /Users/don/Documents/repo/config/bin/setipaddress.sh /Users/don/Documents/repo/config/bin/setup_ipaddress.py /Users/don/Documents/repo/config/bin/run-test-parallel.sh tmp/'
 alias setip='./tmp/setipaddress.sh'
 
 
 # =============================================================================
 # add source to verify the command
 # =============================================================================
-export PATH="/Users/don/.pyenv/bin:$PATH"
+export PATH=/opt/homebrew/bin:$PATH
+export PATH=/opt/homebrew/sbin:$PATH
+export PYENV_ROOT="/Users/don/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-eval "$(/Users/don/homebrew/bin/brew shellenv)"
-source /Users/don/Documents/Repo/config/BASH/bash_func.sh
+source /Users/don/Documents/repo/config/BASH/bash_func.sh
 add_PATH ~/
 change_PS1
