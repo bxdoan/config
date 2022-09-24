@@ -32,13 +32,20 @@ fi
 pytest_run_log=`mktemp`
 echo "Log file written to $pytest_run_log"; echo
 
-DIR_TEST=$1
-if [[ -z $DIR_TEST ]]; then DIR_TEST=''; fi
+DIR_ATLAS=$1
+if [[ -z $DIR_ATLAS ]]; then DIR_ATLAS=''; fi
 
-XDIST_WORKER_NUM=$2
-if [[ -z $XDIST_WORKER_NUM ]]; then XDIST_WORKER_NUM=4; fi
+DIR_TEST=$2
+if [[ -z $DIR_TEST ]]; then DIR_TEST="$DIR_ATLAS/tests"; fi
 
-cd $CODE
+XDIST_WORKER_NUM=$3
+if [[ -z $XDIST_WORKER_NUM ]]; then XDIST_WORKER_NUM=2; fi
+
+cd $DIR_ATLAS
+    printf "cd ${GR}%s${EC}\n" "${DIR_ATLAS}"
+    printf "run test dir: ${GR}%s${EC} and worker number: ${GR}%s${EC}\n" "${DIR_TEST}" "${XDIST_WORKER_NUM}"
+    printf "${GR}pipenv run pytest -p no:warnings --tb=short -n%s %s --reruns 1 --max-worker-restart=0${EC}\n" "${XDIST_WORKER_NUM}" "${DIR_TEST}"
+
     pipenv run pytest -p no:warnings --tb=short    -n${XDIST_WORKER_NUM}  $DIR_TEST --reruns 1  --max-worker-restart=0  ${@:3} 2>&1 | tee $pytest_run_log
     #                 #no warning  #traceback short  #no of worker to run
 echo "Done running xdist mode - status_code=$?"
