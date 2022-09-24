@@ -86,7 +86,7 @@ for f in $files_to_get; do
     docker cp "${tmp_f}" "${psql_container_root}"
 
     # run scripts
-    printf "exec file %s" "$f"
+    printf "execute file ${GR}%s${EC}\n" "$f"
     if [[ "$f" == *"-stamp-"* ]]; then
        # shellcheck disable=SC1079
        docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'
