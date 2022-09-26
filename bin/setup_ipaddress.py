@@ -1,11 +1,11 @@
-import copy
+from copy import deepcopy
+from os import path
 import json
 import sys
-import os
 
 LIST_JSON = ['config.json', 'config.dev.json', 'config.test.json']
 sample_json = 'config.sample.json'
-CODE_HOME = os.path.abspath(os.path.dirname(__file__) + '/..')
+CODE_HOME = path.abspath(path.dirname(__file__) + '/..')
 
 
 class SetupConfig(object):
@@ -24,7 +24,7 @@ class SetupConfig(object):
         print(f'Update ipaddress file {json_file}')
         config_json_data = self._load_file()
         if config_json_data:
-            config_data = copy.deepcopy(config_json_data)
+            config_data = deepcopy(config_json_data)
             print(f"[BEFORE] postgres : {config_data['postgres']}")
             config_data['postgres'].update({
                 "host": self.ip_address
@@ -38,10 +38,10 @@ class SetupConfig(object):
 
     def upd_more_config(self, config_data):
         file_path = f'{self.dir_atlas}/{sample_json}'
-        if os.path.exists(file_path):
+        if path.exists(file_path):
             with open(file_path) as f_r:
                 config_json_data = json.load(f_r)
-                config_sample_data = copy.deepcopy(config_json_data)
+                config_sample_data = deepcopy(config_json_data)
                 config_data = self._upd_val_key(config_sample_data, config_data)
         else:
             print(f'not found {sample_json} - please check it')
@@ -77,7 +77,7 @@ class SetupConfig(object):
         return data
 
     def _load_file(self):
-        if os.path.exists(self.file_path):
+        if path.exists(self.file_path):
             with open(self.file_path) as f_r:
                 json_data = json.load(f_r)
                 return json_data

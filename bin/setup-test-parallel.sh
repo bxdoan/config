@@ -33,17 +33,17 @@ docker ps | grep ${pg} > /dev/null
 if [[ $? -eq 1 ]]; then
     docker run --name ${pg} -d mdillon/postgis
 fi
-PSQL="docker exec ${pg} psql -Upostgres" ./db/create_db.sh ${number_db}
-PSQL="docker exec ${pg} psql -Upostgres" ./bin/modify-connections-postgresqlconf.sh 800
+PSQL="docker exec ${pg} psql -U postgres" ./db/create_db.sh ${number_db}
+PSQL="docker exec ${pg} psql -U postgres" ./bin/modify-connections-postgresqlconf.sh 800
 docker restart ${pg}
 
 
 usage_hint="
-    PSQL='docker exec gc_postgres psql -Upostgres' ./db/drop_xdist_db.sh
-    PSQL='docker exec gc_postgres psql -Upostgres' ./db/create_db.sh
-    PSQL='docker exec gc_postgres psql -Upostgres' ./bin/modify-connections-postgresqlconf.sh 500
+    PSQL='docker exec gc_postgres psql -U postgres' ./db/drop_xdist_db.sh
+    PSQL='docker exec gc_postgres psql -U postgres' ./db/create_db.sh
+    PSQL='docker exec gc_postgres psql -U postgres' ./bin/modify-connections-postgresqlconf.sh 500
     docker restart gc_postgres
-    docker exec gc_postgres psql -Upostgres -c 'show max_connections' -t
+    docker exec gc_postgres psql -U postgres -c 'show max_connections' -t
 
     ./tmp/run-test-parallel.sh
     ./tmp/run-test-parallel.sh  tests/api          8
