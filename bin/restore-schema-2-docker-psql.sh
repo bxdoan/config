@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 STARTTIME=$(date +%s)
+# shellcheck disable=SC2006
+# shellcheck disable=SC2128
+# shellcheck disable=SC2034
+# shellcheck disable=SC2046
+# shellcheck disable=SC2006
+# shellcheck disable=SC2034
+PWD=`cd $(dirname "$BASH_SOURCE") && pwd`; CODE=$(cd "$PWD"/.. && pwd)
+set -e  # halt if error
+
+if [ -f "$PWD"/.env-restore-schema ]; then
+    # Load Environment Variables from .env-restore-schema
+    # shellcheck disable=SC2046
+    export $(cat "$PWD"/.env-restore-schema | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
+fi
 
 # Alias some config
-PWD=`cd $(dirname "$BASH_SOURCE") && pwd`; CODE=`cd $PWD/.. && pwd`
-psql_container=${PSQL_CONTAINER:-gc_postgres_dn}
-replicate_home=$HOME/replicate-schema; mkdir -p ${replicate_home}
+psql_container=${PSQL_CONTAINER:-postgres_dn}
+replicate_home=$HOME/replicate-schema; mkdir -p "${replicate_home}"
 directory_listing=/tmp/directory_listing
 
 #region printing util
@@ -27,13 +40,6 @@ DOCSTRING=cat << EOF
    ./bin/restore-schema-2-docker-psql.sh
 EOF
 
-set -e  # halt if error
-
-if [ -f "$PWD"/.env-restore-schema ]; then
-    # Load Environment Variables from .env-restore-schema
-    export $(cat "$PWD"/.env-restore-schema | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
-fi
-
 # get listing from directory sorted by modification date
 ftp -n "$HOST" > $directory_listing <<fin
 quote USER $USER
@@ -44,7 +50,8 @@ quit
 fin
 # parse the filenames from the directory listing
 #files_to_get=$(cut -c 2- < /tmp/directory_listing | head -2 | awk '{print $9}' | sort -r)
-files_to_get=$(cut -c $LS_FILE_OFFSET- < $directory_listing | head -$FILES_TO_GET | awk '{print $9}' | sort -r)
+# shellcheck disable=SC2153
+files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | awk '{print $9}' | sort -r)
 # make a set of get commands from the filename(s)
 cmd=""
 for f in $files_to_get; do
@@ -90,14 +97,26 @@ for f in $files_to_get; do
     if [[ "$f" == *"-stamp-"* ]]; then
        # shellcheck disable=SC1079
        docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'
-       printf "clear alembic_version table first"
+       printf "clear alembic_version table first\n"
     fi
     # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220913050001.sql"
     docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -f "/root/${f}"
 done
 
+p_alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
+
+DIR_ATLAS=$1
+if [[ -z $DIR_ATLAS ]]; then DIR_ATLAS="$PWD/.."; fi
+
+UPGRADE_HEAD=$2
+if [[ $UPGRADE_HEAD == '-up' ]]; then
+  cd "$DIR_ATLAS"
+  pipenv run alembic upgrade head
+fi
+
 alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
 printf "
-alembic_version: ${GR}%s${EC}\n" "${alembic_version}"
+${GR}PRODUCTION${EC} alembic version: ${GR}%s${EC}
+${GR}HEAD${EC} alembic version:       ${GR}%s${EC}\n" "${p_alembic_version}" "${alembic_version}"
 
-print_exe_time ${STARTTIME}
+print_exe_time "${STARTTIME}"

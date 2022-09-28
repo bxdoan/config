@@ -166,9 +166,10 @@ alias goatlas2='cd /Users/don/Documents/giga/atlas2 && source .venv/bin/activate
 alias goatlas3='cd /Users/don/Documents/giga/atlas3 && source .venv/bin/activate && source .env'
 alias goatlas4='cd /Users/don/Documents/giga/atlas4 && source .venv/bin/activate && source .env'
 alias goatlas5='cd /Users/don/Documents/giga/atlas5 && source .venv/bin/activate && source .env'
-alias restore_schem='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh'
-alias cpsetip='mkdir tmp; cp /Users/don/Documents/repo/config/bin/setipaddress.sh /Users/don/Documents/repo/config/bin/setup_ipaddress.py /Users/don/Documents/repo/config/bin/run-test-parallel.sh tmp/'
-alias setip='./tmp/setipaddress.sh'
+alias restoreschema='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh'
+alias restoreup='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh $PWD -up'
+alias setip='/Users/don/Documents/repo/config/bin/setipaddress.sh $PWD'
+alias runtest='/Users/don/Documents/repo/config/bin/run-test-parallel.sh $PWD'
 
 
 # =============================================================================
