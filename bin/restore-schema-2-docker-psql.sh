@@ -19,7 +19,7 @@ fi
 psql_container=${PSQL_CONTAINER:-postgres_dn}
 replicate_home=$HOME/replicate-schema; mkdir -p "${replicate_home}"
 directory_listing=/tmp/directory_listing
-
+CURRENT_TIME=`date +%Y%m%d`
 #region printing util
 EC='\033[0m'    # end coloring
 HL='\033[0;33m' # high-lighted color
@@ -40,50 +40,60 @@ DOCSTRING=cat << EOF
    ./bin/restore-schema-2-docker-psql.sh
 EOF
 
-# get listing from directory sorted by modification date
-ftp -n "$HOST" > $directory_listing <<fin
-quote USER $USER
-quote PASS $PASSWORD
-cd $SOURCE
-ls -t
-quit
-fin
-# parse the filenames from the directory listing
-#files_to_get=$(cut -c 2- < /tmp/directory_listing | head -2 | awk '{print $9}' | sort -r)
-# shellcheck disable=SC2153
-files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | awk '{print $9}' | sort -r)
-# make a set of get commands from the filename(s)
-cmd=""
-for f in $files_to_get; do
-echo $f
-cmd="${cmd}get $f
-"
-done
+number_file=$(ls -alF "$replicate_home" | grep $CURRENT_TIME | wc -l | awk '{print $1}')
+if [[ "$number_file" != *'2'* ]]; then
+  # shellcheck disable=SC2059
+  download_msg="Download and execute file"
 
-tmp2=$(ftp -n $HOST <<fin
-quote USER $USER
-quote PASS $PASSWORD
-cd $SOURCE
-$cmd
-quit
+  # get listing from directory sorted by modification date
+  ftp -n "$HOST" > $directory_listing <<fin
+  quote USER $USER
+  quote PASS $PASSWORD
+  cd $SOURCE
+  ls -t
+  quit
+fin
+
+  # parse the filenames from the directory listing
+  #files_to_get=$(cut -c 2- < /tmp/directory_listing | head -2 | awk '{print $9}' | sort -r)
+  # shellcheck disable=SC2153
+  files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | awk '{print $9}' | sort -r)
+  # make a set of get commands from the filename(s)
+  cmd=""
+  for f in $files_to_get; do
+  echo "$f"
+  cmd="${cmd}get $f
+  "
+  done
+
+  tmp2=$(ftp -n $HOST <<fin
+  quote USER $USER
+  quote PASS $PASSWORD
+  cd $SOURCE
+  $cmd
+  quit
 fin
 )
 
-for f in $files_to_get; do
-  echo "copy file from $f to $replicate_home/"
-  # shellcheck disable=SC2086
-  mv ${f} "${replicate_home}"/
-done
+  for f in $files_to_get; do
+    echo "copy file from $f to $replicate_home/"
+    # shellcheck disable=SC2086
+    mv ${f} "${replicate_home}"/
+  done
 
-rm -f /tmp/directory_listing
+  rm -f /tmp/directory_listing
+else
+  download_msg="No download and execute existing file in $replicate_home"
+  files_to_get=$(ls -alF "$replicate_home" | grep "$CURRENT_TIME" | awk '{print $9}' | sort -r)
+fi
+
 # restore script files to psql db
-    # drop schema then re-create
-    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
-    docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
-    # grant permission for schema
-    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
-    docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
-
+# drop schema then re-create
+# docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
+docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
+# grant permission for schema
+# docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
+docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
 
 for f in $files_to_get; do
     # copy script to container
@@ -116,7 +126,9 @@ fi
 
 alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
 printf "
+    ${GR}INFO RESTORE SCHEMA AND UPGRADE HEAD${EC}
+Number file downloaded today ${GR}%s${EC}: ${GR}%s${EC}
+%s
 ${GR}PRODUCTION${EC} alembic version: ${GR}%s${EC}
-${GR}HEAD${EC} alembic version:       ${GR}%s${EC}\n" "${p_alembic_version}" "${alembic_version}"
-
+${GR}HEAD${EC} alembic version:       ${GR}%s${EC}\n" "$CURRENT_TIME" "$number_file" "$download_msg" "${p_alembic_version}" "${alembic_version}"
 print_exe_time "${STARTTIME}"
