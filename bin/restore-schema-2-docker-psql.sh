@@ -84,16 +84,16 @@ fin
   rm -f /tmp/directory_listing
 else
   download_msg="No download and execute existing file in $replicate_home"
-  files_to_get=$(ls -alF "$replicate_home" | grep "$CURRENT_TIME" | awk '{print $9}' | sort -r)
+  files_to_get=$(ls -alF "$replicate_home" | grep "$CURRENT_TIME" | awk '{print $NF}' | sort -r)
 fi
 
 # restore script files to psql db
 # drop schema then re-create
 # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
-docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
+tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;')
 # grant permission for schema
 # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
-docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
+tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;')
 
 for f in $files_to_get; do
     # copy script to container
@@ -106,11 +106,11 @@ for f in $files_to_get; do
     printf "execute file ${GR}%s${EC}\n" "$f"
     if [[ "$f" == *"-stamp-"* ]]; then
        # shellcheck disable=SC1079
-       docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version'
+       tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version')
        printf "clear alembic_version table first\n"
     fi
     # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220913050001.sql"
-    docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -f "/root/${f}"
+    tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -f "/root/${f}")
 done
 
 p_alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
@@ -121,7 +121,7 @@ if [[ -z $DIR_ATLAS ]]; then DIR_ATLAS="$PWD/.."; fi
 UPGRADE_HEAD=$2
 if [[ $UPGRADE_HEAD == '-up' ]]; then
   cd "$DIR_ATLAS"
-  pipenv run alembic upgrade head
+  tmp2=$(pipenv run alembic upgrade head)
 fi
 
 alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
