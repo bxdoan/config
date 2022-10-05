@@ -16,9 +16,10 @@ if [ -f "$PWD"/.env-restore-schema ]; then
 fi
 
 # Alias some config
-psql_container=${PSQL_CONTAINER:-postgres_dn}
+pg=${PSQL_CONTAINER:-postgres_dn}
 replicate_home=$HOME/replicate-schema; mkdir -p "${replicate_home}"
 directory_listing=/tmp/directory_listing
+# shellcheck disable=SC2006
 CURRENT_TIME=`date +%Y%m%d`
 #region printing util
 EC='\033[0m'    # end coloring
@@ -33,14 +34,14 @@ function print_exe_time() {
     ENDTIME=$(date +%s)
     EXE_TIME=$((${ENDTIME} - ${STARTTIME}))
     printf "
-It takes ${GR}${EXE_TIME}${EC} seconds to complete this script...\n"
+It takes ${GR}%s${EC} seconds to complete this script...\n" " ${EXE_TIME}"
 }
 
 DOCSTRING=cat << EOF
    ./bin/restore-schema-2-docker-psql.sh
 EOF
 
-number_file=$(ls -alF "$replicate_home" | grep $CURRENT_TIME | wc -l | awk '{print $1}')
+number_file=$(ls -alF "$replicate_home" | grep -c "$CURRENT_TIME" | awk '{print $1}')
 if [[ "$number_file" != *'2'* ]]; then
   # shellcheck disable=SC2059
   download_msg="Download and execute file"
@@ -55,7 +56,6 @@ if [[ "$number_file" != *'2'* ]]; then
 fin
 
   # parse the filenames from the directory listing
-  #files_to_get=$(cut -c 2- < /tmp/directory_listing | head -2 | awk '{print $9}' | sort -r)
   # shellcheck disable=SC2153
   files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | awk '{print $9}' | sort -r)
   # make a set of get commands from the filename(s)
@@ -89,31 +89,28 @@ fi
 
 # restore script files to psql db
 # drop schema then re-create
-# docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'
-tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;')
+tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;')
 # grant permission for schema
-# docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;'
-tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;')
+tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;')
 
 for f in $files_to_get; do
     # copy script to container
     tmp_f="$replicate_home/$f"
-    psql_container_root="$psql_container:/root/$f"
-    echo "copy file from $tmp_f to $psql_container_root"
-    docker cp "${tmp_f}" "${psql_container_root}"
+    pg_root="$pg:/root/$f"
+    echo "copy file from $tmp_f to $pg_root"
+    docker cp "${tmp_f}" "${pg_root}"
 
     # run scripts
     printf "execute file ${GR}%s${EC}\n" "$f"
     if [[ "$f" == *"-stamp-"* ]]; then
        # shellcheck disable=SC1079
-       tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'delete from alembic_version')
+       tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'delete from alembic_version')
        printf "clear alembic_version table first\n"
     fi
-    # docker exec -it gc_postgres_dn psql -w -U postgres -d atlas  -f "/root/alembic-stamp-20220913050001.sql"
-    tmp2=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -f "/root/${f}")
+    tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -f "/root/${f}")
 done
 
-p_alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
+p_alembic_version=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
 
 DIR_ATLAS=$1
 if [[ -z $DIR_ATLAS ]]; then DIR_ATLAS="$PWD/.."; fi
@@ -124,7 +121,7 @@ if [[ $UPGRADE_HEAD == '-up' ]]; then
   tmp2=$(pipenv run alembic upgrade head)
 fi
 
-alembic_version=$(docker exec -it "${psql_container}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
+alembic_version=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
 printf "
     ${GR}INFO RESTORE SCHEMA AND UPGRADE HEAD${EC}
 Number file downloaded today ${GR}%s${EC}: ${GR}%s${EC}

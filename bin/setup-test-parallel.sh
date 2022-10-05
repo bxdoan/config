@@ -20,7 +20,12 @@ if [[ -z $1 ]]; then
 fi
 
 post_fix=$1
-pg="gc_postgres_${post_fix}"
+if [ -f "$PWD"/.env-restore-schema ]; then
+    # Load Environment Variables from .env-restore-schema
+    # shellcheck disable=SC2046
+    export $(cat "$PWD"/.env-restore-schema | grep -v '#' | sed 's/\r$//' | awk '/=/ {print $1}' )
+fi
+pg="${PSQL_CONTAINER}"
 
 if [[ $2 == '4' ]]; then
     number_db=4
