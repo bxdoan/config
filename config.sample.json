@@ -1,7 +1,7 @@
 {
     "apiKey": "something",
     "celery": {
-        "backend_url": "mongodb://localhost/atlas_celery_test",
+        "backend_url": "mongodb://localhost/celery_test",
         "broker_url": "amqp://guest:guest@localhost:5672//",
         "flower_address": "localhost",
         "flower_basic_auth": [
@@ -11,7 +11,7 @@
         "task_always_eager": true
     },
     "common_emails": {
-        "developers": "developers@gigacover.com"
+        "developers": "developers@gc.com"
     },
     "darksky": {
         "apiKey": "something"
@@ -43,14 +43,14 @@
         }
     },
     "idoc_service": {
-        "baseUrl": "https://login.easycare.com.sg/Gigacover/?",
+        "baseUrl": "localhost",
         "keys": {
             "+": "p1L2u3S",
             "/": "s1L2a3S4h",
             "=": "e1Q2u3A4l",
             "password": "ssdfaf"
         },
-        "token": "Gigacover12"
+        "token": "gc"
     },
     "mhc": {
         "apiKey": "test"
@@ -70,7 +70,7 @@
     },
     "postgres": {
         "ciuser": "ubuntu",
-        "db": "atlas_test",
+        "db": "ad",
         "host": "1.1.1.1",
         "port": "5432",
         "pswd": ""
@@ -86,10 +86,10 @@
         "apiKey": ""
     },
     "sentinel": {
-        "aa": "http://sentinel",
-        "gc": "http://sentinel",
+        "aa": "http://doan",
+        "gc": "http://doan",
         "jwtSecret": "secret",
-        "mer": "http://sentinel"
+        "mer": "http://doan"
     },
     "settings": {
         "alertsEmail": "",
@@ -99,7 +99,7 @@
     "stripe": {
         "apiKey": "",
         "connected_accounts": {
-            "axa_account_id": "some_axa_account"
+            "axa_account_id": "axa"
         }
     },
     "telegram": {
@@ -111,6 +111,6 @@
         "fromNumber": ""
     },
     "website_url": {
-        "gc": "https://gigacover.com/"
+        "gc": "https://doan.com/"
     }
 }
