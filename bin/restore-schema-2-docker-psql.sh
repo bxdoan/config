@@ -50,6 +50,7 @@ if [[ "$number_file" != *'2'* ]]; then
   ftp -n "$HOST" > $directory_listing <<fin
   quote USER $USER
   quote PASS $PASSWORD
+  pass
   cd $SOURCE
   ls -t
   quit
@@ -57,7 +58,7 @@ fin
 
   # parse the filenames from the directory listing
   # shellcheck disable=SC2153
-  files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | awk '{print $9}' | sort -r)
+  files_to_get=$(cut -c "$LS_FILE_OFFSET"- < $directory_listing | head -"$FILES_TO_GET" | tail -n 2 | awk '{print $9}' | sort -r)
   # make a set of get commands from the filename(s)
   cmd=""
   for f in $files_to_get; do
@@ -69,6 +70,7 @@ fin
   tmp2=$(ftp -n $HOST <<fin
   quote USER $USER
   quote PASS $PASSWORD
+  pass
   cd $SOURCE
   $cmd
   quit
@@ -81,7 +83,6 @@ fin
     mv ${f} "${replicate_home}"/
   done
 
-  rm -f /tmp/directory_listing
 else
   download_msg="No download and execute existing file in $replicate_home"
   files_to_get=$(ls -alF "$replicate_home" | grep "$CURRENT_TIME" | awk '{print $NF}' | sort -r)
@@ -105,7 +106,7 @@ for f in $files_to_get; do
     if [[ "$f" == *"-stamp-"* ]]; then
        # shellcheck disable=SC1079
        tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'delete from alembic_version')
-       printf "clear alembic_version table first\n"
+       printf "clear ${GR}alembic_version${EC} table first\n"
     fi
     tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -f "/root/${f}")
 done
@@ -127,5 +128,5 @@ printf "
 Number file downloaded today ${GR}%s${EC}: ${GR}%s${EC}
 %s
 ${GR}PRODUCTION${EC} alembic version: ${GR}%s${EC}
-${GR}HEAD${EC} alembic version:       ${GR}%s${EC}\n" "$CURRENT_TIME" "$number_file" "$download_msg" "${p_alembic_version}" "${alembic_version}"
+${GR}HEAD${EC} alembic version:       ${GR}%s${EC}" "$CURRENT_TIME" "$number_file" "$download_msg" "${p_alembic_version}" "${alembic_version}"
 print_exe_time "${STARTTIME}"

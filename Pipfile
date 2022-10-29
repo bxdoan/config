@@ -16,6 +16,7 @@ gunicorn = "*"
 requests = "*"
 sendgrid = "*"
 simplejson = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.9.13"
