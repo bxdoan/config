@@ -24,8 +24,8 @@
         "baseUrl": "",
         "flatfileDir": "",
         "key": "<SOME_KEY>",
-        "token": "ETIQA_TOKEN_FOR_AUTOARMOUR",
-        "username": "AutoArmour"
+        "token": "token",
+        "username": "love"
     },
     "freshchat": {
         "baseUrl": "https://api.freshchat.com/v2",
