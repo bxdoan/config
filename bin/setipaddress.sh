@@ -15,8 +15,8 @@ value="$your_ip;$to"
 
 _() {
     local SH=$(cd `dirname $BASH_SOURCE` && pwd)
-    local AH=$(cd "$SH/.." && pwd)
-    printf "go to %s and exe %s\n" "$to" "$SH/setup_ipaddress.py"
-    $pipenv run python "$SH/setup_ipaddress.py" $value
+    local AH=$(cd "$SH/../src" && pwd)
+    printf "go to %s and exe %s\n" "$to" "$AH/setup_ipaddress.py"
+    $pipenv run python "$AH/setup_ipaddress.py" $value
 }
     eval _

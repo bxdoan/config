@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+export repo='/Users/don/Documents/repo/'
+export config='/Users/don/Documents/repo/config/'
+export source='/Users/don/Documents/repo/source/'
+
+# =============================================================================
+# Alias giga
+# =============================================================================
+export aqa='34.87.182.148'
+export PIPENV_VENV_IN_PROJECT=1
+export BASH_SILENCE_DEPRECATION_WARNING=1
+export GOOGLE_APPLICATION_CREDENTIALS=''/Users/don/Documents/giga/atlas2/gcp-service-account-release.credentials.json''

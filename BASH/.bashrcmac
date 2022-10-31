@@ -1,3 +1,5 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/bashrc.pre.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.pre.bash"
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -80,8 +82,6 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval
 "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -92,11 +92,6 @@ fi
 #export
 GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -105,6 +100,11 @@ alias l='ls -CF'
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
 fi
 
 # enable programmable completion features (you don't need to enable
@@ -118,42 +118,9 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# =============================================================================
-# alias usefull command
-# =============================================================================
-alias upd_bash='source ~/.bashrc'
-alias grepd='grep -r -s -I --color'
-alias emacsnw='emacs -nw'
-alias lsa='ls -a'
-
 export repo='/Users/don/Documents/repo/'
 export config='/Users/don/Documents/repo/config/'
 export source='/Users/don/Documents/repo/source/'
-
-# =============================================================================
-# Alias Git
-# =============================================================================
-alias g='git'
-alias ga='git add'
-alias gb='git br'
-alias gt='git tree'
-alias go='git co'
-alias gof='git co -f'
-alias gi='git commit'
-alias gpl='git pull'
-alias gplrb='git pull --rebase'
-alias giam='git commit --amend'
-alias gm='git merge'
-alias gcp='git cherry-pick'
-alias gps='git push'
-alias gh='git hist'
-alias gs='git st'
-alias gsu='git st -u'
-alias gk='gitk &'
-alias gf='git fetch'
-alias gr='git reset'
-alias grb='git rb'
-
 
 # =============================================================================
 # Alias giga
@@ -161,16 +128,7 @@ alias grb='git rb'
 export aqa='34.87.182.148'
 export PIPENV_VENV_IN_PROJECT=1
 export BASH_SILENCE_DEPRECATION_WARNING=1
-alias goatlas='cd /Users/don/Documents/giga/atlas && source .venv/bin/activate && source .env'
-alias goatlas2='cd /Users/don/Documents/giga/atlas2 && source .venv/bin/activate && source .env'
-alias goatlas3='cd /Users/don/Documents/giga/atlas3 && source .venv/bin/activate && source .env'
-alias goatlas4='cd /Users/don/Documents/giga/atlas4 && source .venv/bin/activate && source .env'
-alias goatlas5='cd /Users/don/Documents/giga/atlas5 && source .venv/bin/activate && source .env'
-alias restoreschema='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh'
-alias restoreup='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh $PWD -up'
-alias setip='/Users/don/Documents/repo/config/bin/setipaddress.sh $PWD'
-alias runtest='/Users/don/Documents/repo/config/bin/run-test-parallel.sh $PWD'
-
+export GOOGLE_APPLICATION_CREDENTIALS=''/Users/don/Documents/giga/atlas2/gcp-service-account-release.credentials.json''
 
 # =============================================================================
 # add source to verify the command
@@ -184,3 +142,6 @@ eval "$(pyenv init -)"
 source /Users/don/Documents/repo/config/BASH/bash_func.sh
 add_PATH ~/
 change_PS1
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/bashrc.post.bash" ]] && builtin source "$HOME/.fig/shell/bashrc.post.bash"
