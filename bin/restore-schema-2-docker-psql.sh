@@ -47,14 +47,25 @@ if [[ "$number_file" != *'2'* ]]; then
   download_msg="Download and execute file"
 
   # get listing from directory sorted by modification date
-  ftp -n "$HOST" > $directory_listing <<fin
-  quote USER $USER
-  quote PASS $PASSWORD
-  pass
-  cd $SOURCE
-  ls -t
-  quit
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    ftp -n "$HOST" > $directory_listing <<fin
+    quote USER $USER
+    quote PASS $PASSWORD
+    cd $SOURCE
+    pass
+    ls -t
+    quit
 fin
+  else
+    ftp -n "$HOST" > $directory_listing <<fin
+    quote USER $USER
+    quote PASS $PASSWORD
+    cd $SOURCE
+    ls -t
+    quit
+fin
+  fi
+
 
   # parse the filenames from the directory listing
   # shellcheck disable=SC2153
@@ -67,15 +78,27 @@ fin
   "
   done
 
-  tmp2=$(ftp -n $HOST <<fin
-  quote USER $USER
-  quote PASS $PASSWORD
-  pass
-  cd $SOURCE
-  $cmd
-  quit
+  if [[ $OSTYPE == 'darwin'* ]]; then
+    tmp2=$(ftp -n $HOST <<fin
+    quote USER $USER
+    quote PASS $PASSWORD
+    pass
+    cd $SOURCE
+    $cmd
+    quit
 fin
 )
+  else
+    tmp2=$(ftp -n $HOST <<fin
+    quote USER $USER
+    quote PASS $PASSWORD
+    cd $SOURCE
+    $cmd
+    quit
+fin
+)
+  fi
+
 
   for f in $files_to_get; do
     echo "copy file from $f to $replicate_home/"
