@@ -23,16 +23,31 @@ function create_and_seed {
 
 function create_and_seed_usr {
      # Insert some seeding data users
-  echo "Insert some seeding data user"
+   echo "Insert some seeding data user"
 
-#   $dsql -d $psqldb_atlas -c "INSERT INTO groups (name, sponsor_message, email) VALUES
-#             ('gigacover', 'sponsor_message', '${USERNAME}@g.com');"
-#   $dsql -d $psqldb_atlas -c "INSERT INTO users (first_name, last_name, password, nricfin, email, \"createdAt\", \"updatedAt\") VALUES
-#             ('${USERNAME}', 'bui', '${username_pass}', 'S7515739H', '${USERNAME}@g.com', '${CURRENT_TIME} 04:11:53.664044+00', '${CURRENT_TIME} 04:11:53.664044+00');"
-   $dsql -d $psqldb_atlas -c "INSERT INTO policies (first_name, last_name, nricfin, policy_number, email, product, plan, insurer, policy_start, policy_end) VALUES
-             ('${USERNAME}', 'bui', 'S7515739H', 'HEP00001-1028440-001', '${USERNAME}@g.com', 'pml', 'pml80', 'etiqa', '${CURRENT_TIME}', '${CURRENT_TIME}');"
-  # Show customers table
+   $dsql -d $psqldb_atlas -c "INSERT INTO groups (name, sponsor_message, email) VALUES
+             ('gigacover', 'sponsor_message', '${USERNAME}@g.com');"
+   $dsql -d $psqldb_atlas -c "INSERT INTO users (first_name, last_name, password, nricfin, email, \"createdAt\",
+   \"updatedAt\") VALUES ('${USERNAME}', 'bui', '${username_pass}', 'S7515739H', '${USERNAME}@g.com',
+    '${CURRENT_TIME} 04:11:53.664044+00', '${CURRENT_TIME} 04:11:53.664044+00');"
+   $dsql -d $psqldb_atlas -c "INSERT INTO policies (first_name, last_name, nricfin, policy_number, email, product, plan,
+    insurer, policy_start, policy_end) VALUES ('${USERNAME}', 'bui', 'S7515739H', 'HEP00001-1028440-001',
+    '${USERNAME}@g.com', 'pml', 'pml80', 'etiqa', '${CURRENT_TIME}', '${CURRENT_TIME}');"
+   # Show customers table
    $dsql -d $psqldb_atlas -c "SELECT * FROM users;"
+}
+
+function fleet_price_reference {
+     # Insert some seeding data users
+  echo "Insert some seeding data user"
+  $dsql -d $psqldb_atlas -c "INSERT INTO fleet_price_reference (type, excess_type, section1excess, section2excess,
+   combined_excess, discounted_premium, reduced_combined_excess, vehicle_type, discount) VALUES
+             ('standard', 'all_claims', 2000, 2000, 2000, 4.29,500, 'car', 0);"
+  $dsql -d $psqldb_atlas -c "INSERT INTO fleet_price_reference (type, excess_type, section1excess, section2excess,
+  combined_excess, discounted_premium, reduced_combined_excess, vehicle_type, discount) VALUES
+             ('gojek', 'all_claims', 2000, 2000, 1000, 4.29,500, 'car', 0);"
+  # Show customers table
+   $dsql -d $psqldb_atlas -c "SELECT * FROM fleet_price_reference;"
 }
 
 
