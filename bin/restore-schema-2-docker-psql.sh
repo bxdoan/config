@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 STARTTIME=$(date +%s)
+f_debug='f'
 # shellcheck disable=SC2006
 # shellcheck disable=SC2128
 # shellcheck disable=SC2034
@@ -37,9 +38,11 @@ function print_exe_time() {
 It takes ${GR}%s${EC} seconds to complete this script...\n" " ${EXE_TIME}"
 }
 
-DOCSTRING=cat << EOF
-   ./bin/restore-schema-2-docker-psql.sh
-EOF
+function print_debug() {
+  if [[ $f_debug == 't' ]]; then
+    printf "${1}\n"
+  fi
+}
 
 number_file=$(ls -alF "$replicate_home" | grep -c "$CURRENT_TIME" | awk '{print $1}')
 if [[ "$number_file" != *'2'* ]]; then
@@ -101,7 +104,7 @@ fin
 
 
   for f in $files_to_get; do
-    echo "copy file from $f to $replicate_home/"
+    print_debug "download file $f to $replicate_home/"
     # shellcheck disable=SC2086
     mv ${f} "${replicate_home}"/
   done
@@ -111,29 +114,35 @@ else
   files_to_get=$(ls -alF "$replicate_home" | grep "$CURRENT_TIME" | awk '{print $NF}' | sort -r)
 fi
 
-# restore script files to psql db
-# drop schema then re-create
-tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;')
-# grant permission for schema
-tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;')
+function drop_schema() {
+  # restore script files to psql db
+  # drop schema then re-create
+  docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;' >& /dev/null
+  # grant permission for schema
+  docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'GRANT ALL ON SCHEMA public TO public; GRANT ALL ON SCHEMA public TO postgres;' >& /dev/null
+}
 
-for f in $files_to_get; do
-    # copy script to container
-    tmp_f="$replicate_home/$f"
-    pg_root="$pg:/root/$f"
-    echo "copy file from $tmp_f to $pg_root"
-    docker cp "${tmp_f}" "${pg_root}"
+function execute_file() {
+  for f in $files_to_get; do
+      # copy script to container
+      tmp_f="$replicate_home/$f"
+      pg_root="$pg:/root/$f"
+      print_debug "copy file from $tmp_f to $pg_root"
+      docker cp "${tmp_f}" "${pg_root}"
 
-    # run scripts
-    printf "execute file ${GR}%s${EC}\n" "$f"
-    if [[ "$f" == *"-stamp-"* ]]; then
-       # shellcheck disable=SC1079
-       tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'delete from alembic_version')
-       printf "clear ${GR}alembic_version${EC} table first\n"
-    fi
-    tmp2=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -f "/root/${f}")
-done
+      # run scripts
+      print_debug "execute file ${GR}%s${EC}" "$f"
+      if [[ "$f" == *"-stamp-"* ]]; then
+         # shellcheck disable=SC1079
+         docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'delete from alembic_version' >& /dev/null
+         print_debug "clear ${GR}alembic_version${EC} table first"
+      fi
+      docker exec -it "${pg}" psql -w -U postgres -d atlas  -f "/root/${f}" >& /dev/null
+  done
+}
 
+drop_schema
+execute_file
 p_alembic_version=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
 
 DIR_ATLAS=$1
@@ -142,7 +151,7 @@ if [[ -z $DIR_ATLAS ]]; then DIR_ATLAS="$PWD/.."; fi
 UPGRADE_HEAD=$2
 if [[ $UPGRADE_HEAD == '-up' ]]; then
   cd "$DIR_ATLAS"
-  tmp2=$(pipenv run alembic upgrade head)
+  pipenv run alembic upgrade head  >& /dev/null
 fi
 
 alembic_version=$(docker exec -it "${pg}" psql -w -U postgres -d atlas  -c 'select * from alembic_version' | sed -n '3p')
