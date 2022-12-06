@@ -31,7 +31,8 @@ class AnaliseConfig(object):
             datas = []
         sum_top, top_address = self._cal(datas, top_address)
         percent = round(sum_top * 100 / sum_all)
-        print(f"{sum_top=} and {top_address=} and {percent=}\n")
+        sum_top = '{:,.0f}'.format(sum_top)
+        print(f"sum_top={sum_top} and {top_address=} and {percent=}")
 
     def _cal(self, datas=None, top_address=0):
         if not datas:
@@ -56,9 +57,9 @@ class AnaliseConfig(object):
 
         # region read file upload
         if self.dir.lower().endswith('.csv'):
-            raw_v_rows = self._read_csv_file(self.dir, COLUMN_MAPPING)
+            raw_v_rows = self._read_csv_file()
         elif self.dir.lower().endswith('.xlsx'):
-            raw_v_rows = self._read_xlsx_file(self.dir, COLUMN_MAPPING)
+            raw_v_rows = self._read_xlsx_file()
         else:
             raise Exception
         # endregion
@@ -110,7 +111,7 @@ class AnaliseConfig(object):
         raw_headers = [ws.cell(row=1, column=ci).value for ci in range(1, max_column + 1)]  # ci aka column_index
         raw_headers = list(filter(None, raw_headers))  # remove None column out of header list
 
-        v_fields = [h and column_mapping.get(h.strip()) for h in
+        v_fields = [h and COLUMN_MAPPING.get(h.strip()) for h in
                     raw_headers]  # h aka header, ensure header is not null to strip and no error is thrown
         raw_v_rows = []  # raw_v_rows aka raw vehicle rows
         col_count = len(raw_headers)
@@ -137,7 +138,8 @@ def split_list(list_value=None):
 
 if __name__ == '__main__':
     dir_sweat = f"{TMP}/export-sweat.csv"
+    dir_sweat_token = f"{TMP}/sweat-token.csv"
     dir_people = f"{TMP}/token-people.csv"
     AnaliseConfig(
-        dir = dir_people,
+        dir = dir_sweat,
     ).process()
