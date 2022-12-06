@@ -25,11 +25,12 @@ class SetupConfig(object):
         config_json_data = self._load_file()
         if config_json_data:
             config_data = deepcopy(config_json_data)
-            print(f"[BEFORE] postgres : {config_data['postgres']}")
-            config_data['postgres'].update({
-                "host": self.ip_address
-            })
-            print(f"[AFTER]  postgres : {config_data['postgres']}")
+            if config_data.get('postgres'):
+                print(f"[BEFORE] postgres : {config_data['postgres']}")
+                config_data['postgres'].update({
+                    "host": self.ip_address
+                })
+                print(f"[AFTER]  postgres : {config_data['postgres']}")
             config_data = self.upd_more_config(config_data)
             self._dump_file(config_data=config_data)
             print(f'Update ipaddress file {json_file}...Done!')
