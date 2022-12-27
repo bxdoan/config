@@ -19,4 +19,4 @@ simplejson = "*"
 openpyxl = "*"
 
 [requires]
-python_version = "3.9.13"
+python_version = "3.9"
