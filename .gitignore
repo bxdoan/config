@@ -5,4 +5,5 @@
 config.json
 config.test.json
 config.dev.json
+src/tmp/
 tmp/

@@ -3,6 +3,8 @@ from os import path
 import json
 import sys
 
+from src import utils
+
 LIST_JSON = ['config.json', 'config.dev.json', 'config.test.json']
 sample_json = 'config.sample.json'
 CODE_HOME = path.abspath(path.dirname(__file__) + '/..')
@@ -86,22 +88,8 @@ class SetupConfig(object):
             return None
 
 
-def split_list(list_value=None):
-    if list_value is None:
-        list_value = []
-    if ';' in list_value:
-        res = list_value.split(';')
-    elif '\n' in list_value:
-        res = list_value.split('\n')
-    elif '|' in list_value:
-        res = list_value.split('|')
-    else:
-        res = list_value
-    return res
-
-
 if __name__ == '__main__':
-    value = split_list(sys.argv[1])
+    value = utils.split_list(sys.argv[1])
     ip_address = value[0]
     dir_atlas = value[1]
     SetupConfig(

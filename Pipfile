@@ -17,6 +17,10 @@ requests = "*"
 sendgrid = "*"
 simplejson = "*"
 openpyxl = "*"
+argparse = "*"
+pandas = "*"
+plotly = "*"
+dash = "*"
 
 [requires]
 python_version = "3.9"

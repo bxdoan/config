@@ -1,9 +1,12 @@
-import csv
-import openpyxl
+import argparse
 from os import path
 
-CODE_HOME = path.abspath(path.dirname(__file__) + '/..')
-TMP = f"{CODE_HOME}/tmp"
+from src import utils
+
+CURR_DIR = path.dirname(path.abspath(__file__))
+CURR_DIR_TMP = f"{CURR_DIR}/tmp"
+CODE_HOME = f"{CURR_DIR}/.."  # code home
+CODE_HOME_TMP = f"{CODE_HOME}/tmp"
 COLUMN_MAPPING = {
     'HolderAddress': 'address',
     'Balance': 'balance',
@@ -15,16 +18,33 @@ class AnaliseConfig(object):
 
     def __init__(self, **kwargs):
         self.dir = kwargs.get('dir') or ''
-        self.list = [40, 35, 30, 25, 20, 15, 10]
+        self.from_top = kwargs.get('from_top') or 10
+        self.to_top = kwargs.get('from_top') or 40
+        self.step = kwargs.get('step') or 5
+
+    def check_file(self):
+        if not path.isfile(self.dir):
+            self.dir = f"{CURR_DIR_TMP}/{self.dir}"
+            if not path.isfile(self.dir):
+                self.dir = f"{CODE_HOME_TMP}/{self.dir}"
+                if not path.isfile(self.dir):
+                    print(f"{self.dir} is not exist")
+                    exit()
 
     def process(self):
+        self.check_file()
         datas = self._parser_file()
 
         sum_all, count = self._cal(datas)
         print(f"{sum_all=} and {count=}\n")
-
-        for number in self.list:
+        list_loop = self._generate_list()
+        print(f"{list_loop=}\n")
+        for number in list_loop:
             self._cal_and_print(datas=datas, top_address=number, sum_all=sum_all)
+
+    # generate list from value to value with step
+    def _generate_list(self):
+        return [i for i in range(self.from_top, self.to_top + 1, self.step)]
 
     def _cal_and_print(self, datas=None, top_address=0, sum_all=0):
         if not datas:
@@ -32,7 +52,7 @@ class AnaliseConfig(object):
         sum_top, top_address = self._cal(datas, top_address)
         percent = round(sum_top * 100 / sum_all)
         sum_top = '{:,.0f}'.format(sum_top)
-        print(f"sum_top={sum_top} and {top_address=} and {percent=}")
+        print(f"sum_top={sum_top} and {top_address=} and percent={percent}%")
 
     def _cal(self, datas=None, top_address=0):
         if not datas:
@@ -83,63 +103,31 @@ class AnaliseConfig(object):
         parsed_records = sorted(parsed_records, key=lambda k: k['balance'], reverse=True)
         return parsed_records
 
-    def _read_csv_file(self, file_path, column_mapping):
-        raw_v_rows = []  # raw_v_rows aka raw vehicle rows
-        # region read csv
-        csv.register_dialect('PARCEL_dialect',
-                             delimiter=',',
-                             quoting=csv.QUOTE_ALL,
-                             skipinitialspace=True
-                             )
-        with open(file_path, mode='r') as csv_file:
-            csv_reader = csv.DictReader(csv_file, dialect='PARCEL_dialect')
-            for row in csv_reader:
-                r = dict()  # r aka record
-                for key, value in column_mapping.items():
-                    r[value] = row.get(key)
-                raw_v_rows.append(r)
-        return raw_v_rows
+    def _read_csv_file(self, column_mapping=None):
+        if not column_mapping:
+            column_mapping = COLUMN_MAPPING
+        return utils.read_csv_file(dir_file=self.dir, column_mapping=column_mapping)
 
-    def _read_xlsx_file(self, file_path, column_mapping):
-        wb = openpyxl.load_workbook(file_path)
-        first_sheet = wb.sheetnames[0]
-        ws = wb[first_sheet]  # the 1st sheet at index 0
-
-        max_column = ws.max_column
-        max_row = ws.max_row
-
-        raw_headers = [ws.cell(row=1, column=ci).value for ci in range(1, max_column + 1)]  # ci aka column_index
-        raw_headers = list(filter(None, raw_headers))  # remove None column out of header list
-
-        v_fields = [h and COLUMN_MAPPING.get(h.strip()) for h in
-                    raw_headers]  # h aka header, ensure header is not null to strip and no error is thrown
-        raw_v_rows = []  # raw_v_rows aka raw vehicle rows
-        col_count = len(raw_headers)
-        for ri in range(2, max_row + 1):  # ri aka row_index - we skip the 1st row which is the header rows
-            values = [ws.cell(row=ri, column=ci).value for ci in range(1, col_count + 1)]  # ci aka column_index
-            rvr = dict(zip(v_fields, values))  # rvr aka raw_vehicle_row
-            raw_v_rows.append(rvr)
-        return raw_v_rows
-
-
-def split_list(list_value=None):
-    if list_value is None:
-        list_value = []
-    if ';' in list_value:
-        res = list_value.split(';')
-    elif '\n' in list_value:
-        res = list_value.split('\n')
-    elif '|' in list_value:
-        res = list_value.split('|')
-    else:
-        res = list_value
-    return res
+    def _read_xlsx_file(self, column_mapping=None):
+        if not column_mapping:
+            column_mapping = COLUMN_MAPPING
+        return utils.read_xlsx_file(dir_file=self.dir, column_mapping=column_mapping)
 
 
 if __name__ == '__main__':
-    dir_sweat = f"{TMP}/export-sweat.csv"
-    dir_sweat_token = f"{TMP}/sweat-token.csv"
-    dir_people = f"{TMP}/token-people.csv"
+    # Argparse arguments
+    parser = argparse.ArgumentParser(
+        description="Analise token holder address."
+    )
+
+    parser.add_argument(
+        "-f", "--file",
+        help=f"\033[32m\033[1m\nFile name to analyse \033[0m"
+    )
+
+    dir_file = parser.parse_args().file
+    # check file is exist
+
     AnaliseConfig(
-        dir = dir_sweat,
+        dir = dir_file,
     ).process()
