@@ -115,6 +115,9 @@ class AnaliseConfig(object):
 
 
 if __name__ == '__main__':
+    """
+    python3 src/analize.py -f path/to/ftm.csv
+    """
     # Argparse arguments
     parser = argparse.ArgumentParser(
         description="Analise token holder address."
