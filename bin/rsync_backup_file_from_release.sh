@@ -2,7 +2,14 @@
 # run on release to have backup file: docker exec phoenix_db_c pg_dump -Ujarvis -d phoenix | gzip -c > /tmp/hoa/phoenix_20230202_1156.gz
 #./script/tool_script/rsync_backup_file_from_release.sh /tmp/don/ phoenix_file.gz
 
-timestamp=$(date +%Y%m%d_%H%M)
+STARTTIME=$(date +%s)
+function print_exe_time() {
+    STARTTIME=${1}
+    ENDTIME=$(date +%s)
+    EXE_TIME=$((${ENDTIME} - ${STARTTIME}))
+    printf "
+It takes ${GR}%s${EC} seconds to complete this script...\n" " ${EXE_TIME}"
+}
 # download file from release to local
 # if param is phoenix, then use phoenix_db_c
 # if param is lens, then use lens_c
@@ -26,8 +33,11 @@ fi
 
 file=$(basename ${filepath})
 echo $file
-echo "rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file"
-rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file
+
+if [ "$2" = "-rsync" ]; then
+  echo "rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file"
+  rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file
+fi
 
 # remove .gz in file
 f="${file/.gz/}"
@@ -73,3 +83,5 @@ elif [ "$1" = "swift" ]; then
 elif [ "$1" = "don" ]; then
   echo "Do nothing"
 fi
+
+print_exe_time "${STARTTIME}"
