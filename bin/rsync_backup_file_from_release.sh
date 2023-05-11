@@ -16,6 +16,12 @@ function print_exe_time() {
     printf "
 It takes ${GR}%s${EC} seconds to complete this script...\n" " ${EXE_TIME}"
 }
+
+function ssh_cmd() {
+    printf "${GR}$1${EC}\n"
+    ssh jingr@release.s.gigacover.com "$1"
+}
+
 # download file from release to local
 don_dir=/tmp/don
 
@@ -32,13 +38,11 @@ filepath="$don_dir/$1_file.gz"
 file=$(basename ${filepath})
 echo $file
 
+
 if [ "$2" = "-rsync" ]; then
-  ssh jingr@release.s.gigacover.com "mkdir -p $don_dir"
-
-  cmd_dump="docker exec $CONTAINER_NAME pg_dump -U jarvis -d $DATABASE_NAME | gzip -c > $filepath"
-  echo "ssh jingr@release.s.gigacover.com $cmd_dump"
-  ssh jingr@release.s.gigacover.com $cmd_dump
-
+  echo "download file from release to local"
+  ssh_cmd "mkdir -p $don_dir"
+  ssh_cmd "docker exec $CONTAINER_NAME pg_dump -U jarvis -d $DATABASE_NAME | gzip -c > $filepath"
   echo "rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file"
   rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file
 fi
