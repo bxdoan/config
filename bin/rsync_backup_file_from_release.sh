@@ -23,7 +23,7 @@ function ssh_cmd() {
 }
 
 # download file from release to local
-don_dir=/tmp/don
+remote_tmp="/tmp/`whoami`"
 
 POSTGRES_USER='root'
 CONTAINER_NAME="$1_c"
@@ -34,29 +34,28 @@ if [ "$1" = "phoenix" ]; then
   DATABASE_NAME='phoenix'
 fi
 
-filepath="$don_dir/$1_file.gz"
-file=$(basename ${filepath})
+remotefilepath="$remote_tmp/$1_file.gz"
+file=$(basename ${remotefilepath})
 echo $file
+localfilepath="/Users/`whoami`/Downloads/$file"
 
 
 if [ "$2" = "-rsync" ]; then
   echo "download file from release to local"
-  ssh_cmd "mkdir -p $don_dir"
-  ssh_cmd "docker exec $CONTAINER_NAME pg_dump -U jarvis -d $DATABASE_NAME | gzip -c > $filepath"
-  echo "rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file"
-  rsync -e ssh jingr@release.s.gigacover.com:$filepath ~/Downloads/$file
+  ssh_cmd "mkdir -p $remote_tmp"
+  ssh_cmd "docker exec $CONTAINER_NAME pg_dump -U jarvis -d $DATABASE_NAME | gzip -c > $remotefilepath"
+  echo "rsync -e ssh jingr@release.s.gigacover.com:$remotefilepath $localfilepath"
+  rsync -e ssh jingr@release.s.gigacover.com:$remotefilepath "$localfilepath"
+  # unzip first
+  echo "gzip -df $localfilepath"
+  gzip -df "$localfilepath"
 fi
 
 # remove .gz in file
 f="${file/.gz/}"
 echo "$f from $file"
 
-# unzip first
-echo "gzip -df ~/Downloads/$file"
-gzip -df ~/Downloads/$file
-
 # restore to db
-
 # remember create database "root" and role "gc_writable" "jarvis" first
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE DATABASE root;"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE ROLE gc_writable;"
