@@ -25,11 +25,10 @@ function ssh_cmd() {
 # download file from release to local
 remote_tmp="/tmp/`whoami`"
 
-POSTGRES_USER='root'
+POSTGRES_USER='postgres'
 CONTAINER_NAME="$1_c"
 DATABASE_NAME="$1_m"
 if [ "$1" = "phoenix" ]; then
-  POSTGRES_USER='postgres'
   CONTAINER_NAME="phoenix_db_c"
   DATABASE_NAME='phoenix'
 fi
@@ -60,6 +59,8 @@ echo "$f from $file"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE DATABASE root;"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE ROLE gc_writable;"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE ROLE jarvis;"
+#docker exec -it lumber_c psql -U postgres -c "CREATE DATABASE root;"
+#docker exec -it lumber_c psql -U postgres -c "CREATE ROLE jarvis;"
 echo "DROP DATABASE $DATABASE_NAME;"
 docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
 
