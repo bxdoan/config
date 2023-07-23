@@ -31,6 +31,8 @@ DATABASE_NAME="$1_m"
 if [ "$1" = "phoenix" ]; then
   CONTAINER_NAME="phoenix_db_c"
   DATABASE_NAME='phoenix'
+elif [ "$1" = "lens" ]; then
+  POSTGRES_USER="root"
 fi
 
 remotefilepath="$remote_tmp/$1_file.gz"
@@ -60,7 +62,7 @@ echo "$f from $file"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE ROLE gc_writable;"
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE ROLE jarvis;"
 #docker exec -it lumber_c psql -U postgres -c "CREATE DATABASE root;"
-#docker exec -it lumber_c psql -U postgres -c "CREATE ROLE jarvis;"
+#docker exec -it phoenix_db_c psql -U postgres -c "CREATE ROLE jarvis;"
 echo "DROP DATABASE $DATABASE_NAME;"
 docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "DROP DATABASE $DATABASE_NAME;"
 
