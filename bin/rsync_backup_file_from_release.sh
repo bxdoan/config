@@ -33,6 +33,9 @@ if [ "$1" = "phoenix" ]; then
   DATABASE_NAME='phoenix'
 elif [ "$1" = "lens" ]; then
   POSTGRES_USER="root"
+elif [ "$1" = "babel" ]; then
+  CONTAINER_NAME="$1_db_c"
+  DATABASE_NAME='babel'
 fi
 
 remotefilepath="$remote_tmp/$1_file.gz"
@@ -56,6 +59,7 @@ fi
 f="${file/.gz/}"
 echo "$f from $file"
 
+echo "POSTGRES_USER=$POSTGRES_USER and CONTAINER_NAME=$CONTAINER_NAME and DATABASE_NAME=$DATABASE_NAME"
 # restore to db
 # remember create database "root" and role "gc_writable" "jarvis" first
 #docker exec -it $CONTAINER_NAME psql -U $POSTGRES_USER -c "CREATE DATABASE root;"
