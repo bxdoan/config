@@ -28,14 +28,12 @@ remote_tmp="/tmp/`whoami`"
 POSTGRES_USER='postgres'
 CONTAINER_NAME="$1_c"
 DATABASE_NAME="$1_m"
-if [ "$1" = "phoenix" ]; then
-  CONTAINER_NAME="phoenix_db_c"
-  DATABASE_NAME='phoenix'
+if [ "$1" = "phoenix" ] || [ "$1" = "babel" ]; then
+  # if is phoenix or babel
+  CONTAINER_NAME="$1_db_c"
+  DATABASE_NAME="$1"
 elif [ "$1" = "lens" ]; then
   POSTGRES_USER="root"
-elif [ "$1" = "babel" ]; then
-  CONTAINER_NAME="$1_db_c"
-  DATABASE_NAME='babel'
 fi
 
 remotefilepath="$remote_tmp/$1_file.gz"
