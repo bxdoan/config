@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 
 export repo='/Users/don/Documents/repo/'
+export giga='/Users/don/Documents/giga/'
 export config='/Users/don/Documents/repo/config/'
 export source='/Users/don/Documents/repo/source/'
+export CHAOS_KEY='wy3zMZzm4r9xEkqfQkOJ59APbIYtDCtBv1XEz2Xux4enwNQmOloz05mdXTrMiqRm'
 
 # =============================================================================
 # Alias giga
 # =============================================================================
 export aqa='34.87.182.148'
 export PIPENV_VENV_IN_PROJECT=1
+export REACTPY_DEBUG_MODE=1
 export BASH_SILENCE_DEPRECATION_WARNING=1
-export GOOGLE_APPLICATION_CREDENTIALS=''/Users/don/Documents/giga/atlas2/gcp-service-account-release.credentials.json''
+export GOOGLE_APPLICATION_CREDENTIALS='/Users/don/Documents/giga/atlas2/gcp-service-account-release.credentials.json'

@@ -21,7 +21,6 @@ alias g='git'
 alias ga='git add'
 alias gb='git br'
 alias gt='git tree'
-alias go='git co'
 alias gof='git co -f'
 alias gi='git commit'
 alias gpl='git pull'
@@ -37,11 +36,14 @@ alias gk='gitk &'
 alias gf='git fetch'
 alias gr='git reset'
 alias grb='git rb'
+alias grbc='git rb --continue'
 
 # =============================================================================
 # Alias giga
 # =============================================================================
 alias sshaqa='ssh doan@34.87.182.148'
+alias sshrelease='ssh jingr@release.s.gigacover.com'
+alias sshdemo='ssh jingr@demo.s.gigacover.com'
 alias goatlas='cd /Users/don/Documents/giga/atlas && source .venv/bin/activate && source .env'
 alias goatlas2='cd /Users/don/Documents/giga/atlas2 && source .venv/bin/activate && source .env'
 alias goatlas3='cd /Users/don/Documents/giga/atlas3 && source .venv/bin/activate && source .env'
@@ -51,7 +53,48 @@ alias restoreschema='/Users/don/Documents/repo/config/bin/restore-schema-2-docke
 alias restoreup='/Users/don/Documents/repo/config/bin/restore-schema-2-docker-psql.sh $PWD -up'
 alias setip='/Users/don/Documents/repo/config/bin/setipaddress.sh $PWD'
 alias runtest='/Users/don/Documents/repo/config/bin/run-test-parallel.sh $PWD'
+
+alias dbpho='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh phoenix'
+alias dbpho-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh phoenix -rsync'
+alias dbswift='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh swift'
+alias dbswift-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh swift -rsync'
+alias dblens='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh lens'
+alias dblens-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh lens -rsync'
+alias dblumber='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh lumber'
+alias dblumber-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh lumber -rsync'
+alias dbpapaya='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh papaya'
+alias dbpapaya-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh papaya -rsync'
+alias dbbabel='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh babel'
+alias dbbabel-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh babel -rsync'
+alias dbmer='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh mercury'
+alias dbmer-rsync='/Users/don/Documents/repo/config/bin/rsync_backup_file_from_release.sh mercury -rsync'
+
 alias dsql='docker exec -it gc_postgres_dn psql -Upostgres'
+alias dretro='docker exec -it retroactive bash'
+alias checkrel='curl https://api-release.gigacover.scom/v2/versions/current?logs=7 | jq'
+alias checkpro='curl https://api.gigacover.com/v2/versions/current?logs=7 | jq'
+alias checkdemo='curl https://api-demo.gigacover.com/v2/versions/current?logs=7 | jq'
+alias sshu='ssh ubuntu@192.168.1.13'
+alias sshd='ssh don@34.126.113.105'
+
+# =============================================================================
+# automate incentive usefull command
+# =============================================================================
+
+alias govenom='cd /Users/don/Documents/repo/venom-auto && source .venv/bin/activate && source .env'
+alias govenom2='cd /Users/don/Documents/repo/venom-auto2 && source .venv/bin/activate && source .env'
+alias govenom3='cd /Users/don/Documents/repo/venom-auto3 && source .venv/bin/activate && source .env'
+alias govenom4='cd /Users/don/Documents/repo/venom-auto4 && source .venv/bin/activate && source .env'
+alias govenom5='cd /Users/don/Documents/repo/venom-auto5 && source .venv/bin/activate && source .env'
+alias govenom6='cd /Users/don/Documents/repo/venom-auto6 && source .venv/bin/activate && source .env'
+alias govenom7='cd /Users/don/Documents/repo/venom-auto7 && source .venv/bin/activate && source .env'
+alias govenom8='cd /Users/don/Documents/repo/venom-auto8 && source .venv/bin/activate && source .env'
+
+# =============================================================================
+# security tool usefull command
+# =============================================================================
+alias subfinder='docker run projectdiscovery/subfinder:latest'
+alias naabu='docker run projectdiscovery/naabu:latest'
 
 # =============================================================================
 # alias usefull command
@@ -59,6 +102,17 @@ alias dsql='docker exec -it gc_postgres_dn psql -Upostgres'
 alias upd_bash='source ~/.bashrc'
 alias grepd='grep -r -s -I --color'
 alias emacsnw='emacs -nw'
+alias gorepo='cd /Users/don/Documents/repo'
+alias goretro='cd /Users/don/Documents/repo/metamask-auto'
+alias goretro1='cd /Users/don/Documents/repo/retroactive-auto1'
+alias goretro2='cd /Users/don/Documents/repo/retroactive-auto2'
+alias goretro3='cd /Users/don/Documents/repo/retroactive-auto3'
+alias goretro4='cd /Users/don/Documents/repo/retroactive-auto4'
+alias goretro5='cd /Users/don/Documents/repo/retroactive-auto5'
+alias cleandocker='docker container prune -f; docker volume prune -f; docker image prune -f'
+alias cleanrepo='/Users/don/repo/config/bin/clean.sh'
+alias cleanrepohere='/Users/don/repo/config/bin/clean.sh $PWD'
+
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`

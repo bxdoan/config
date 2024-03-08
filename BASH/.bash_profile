@@ -1,11 +1,14 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/bash_profile.pre.bash" ]] && builtin source "$HOME/.fig/shell/bash_profile.pre.bash"
-[[ -f ~/.bashrc ]] && source ~/.bashrc
+export LC_ALL='en_US.UTF-8'
+export LANG='en_US.UTF-8'
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/bash_profile.post.bash" ]] && builtin source "$HOME/.fig/shell/bash_profile.post.bash"
+[[ -f ~/.bashrc ]] && source ~/.bashrc
 
 for file in ~/.{path,bash_prompt,exports,aliases,functions,extra}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
-unset file;
+unset file;export L1URL=https://eth-mainnet.g.alchemy.com/v2/coTmbEFOlZw3viWFsPeWcjOgdAPR7Afj
+export PATH=$PATH:/usr/local/go/bin
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
